@@ -1,0 +1,49 @@
+
+{
+  "name": "YouChat - Mensajería por Correo",
+  "short_name": "YouChat",
+  "description": "La app cubana de mensajería instantánea a través del correo electrónico. Rápido, Seguro y Moderno.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["social", "communication", "productivity"],
+  "icons": [
+    {
+      "src": "img/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "img/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Noticias",
+      "short_name": "Noticias",
+      "url": "./index.html#noticias",
+      "icons": [{ "src": "img/logo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Telegram",
+      "short_name": "Telegram",
+      "url": "./index.html#telegram",
+      "icons": [{ "src": "img/logo.png", "sizes": "96x96" }]
+    }
+  ]
+}
