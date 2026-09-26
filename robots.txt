@@ -1,0 +1,18 @@
+# ===== YOUCHAT WEB PLANA - ROBOTS.TXT VERSIÓN 1.4.0 =====
+
+User-agent: *
+Allow: /
+Disallow: /styles/
+Disallow: /scripts/
+Disallow: /service-worker.js
+Disallow: /manifest.json
+
+# Rastreo permitido para bots específicos
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap
+Sitemap: https://youchat.web.cu/sitemap.xml
