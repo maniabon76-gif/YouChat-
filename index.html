@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouChat - youchat.web.cu</title>
+    <meta name="description" content="YouChat: la app cubana de mensajería instantánea a través del correo electrónico. Rápido, Seguro y Moderno. Noticias, fotos, memes, foros, tips, tutoriales y comunidad.">
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- ===== FAVICONS ===== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- ===== PWA MANIFEST ===== -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- ===== LUCIDE ICONS ===== -->
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
+
+        :root, [data-theme="light"] {
+            --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #0f172a;
+            --accent: #06b6d4; --telegram: #0088cc; --telegram-dark: #0077b3;
+            --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b; --text-light: #64748b;
+            --border: #e2e8f0; --success: #10b981; --danger: #dc2626;
+            --header-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --hero-bg: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+            --hero-border: #e2e8f0; --footer-bg: #0f172a;
+            --footer-text: rgba(255,255,255,0.7); --footer-text-hover: #ffffff;
+            --telegram-box-bg: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            --telegram-box-border: #bae6fd; --stat-bg: #f1f5f9;
+            --card-tag-bg: #dbeafe; --card-tag-text: #1d4ed8;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --shadow-hover: 0 12px 30px rgba(0,0,0,0.1);
+            --radius: 12px; --transition: all 0.25s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6; --primary-dark: #2563eb; --secondary: #f1f5f9;
+            --accent: #22d3ee; --telegram: #29a9e0; --telegram-dark: #0088cc;
+            --bg: #0f172a; --card-bg: #1e293b; --text: #e2e8f0; --text-light: #94a3b8;
+            --border: #334155; --success: #34d399; --danger: #f87171;
+            --header-bg: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            --hero-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            --hero-border: #334155; --footer-bg: #020617;
+            --footer-text: rgba(255,255,255,0.65); --footer-text-hover: #ffffff;
+            --telegram-box-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            --telegram-box-border: #475569; --stat-bg: #334155;
+            --card-tag-bg: #1e40af; --card-tag-text: #dbeafe;
+            --shadow: 0 4px 20px rgba(0,0,0,0.4);
+            --shadow-hover: 0 12px 30px rgba(0,0,0,0.6);
+        }
+
+        body { background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s ease, color 0.3s ease; }
+
+        .icon { width: 18px; height: 18px; display: inline-block; vertical-align: middle; stroke-width: 2; }
+        .icon-sm { width: 14px; height: 14px; }
+        .icon-lg { width: 24px; height: 24px; }
+        .icon-xl { width: 32px; height: 32px; }
+        nav a .icon { margin-right: 4px; }
+        .btn .icon { margin-right: 6px; }
+
+        header { background: var(--header-bg); color: white; padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+        .header-container { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 70px; gap: 16px; }
+        .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; color: white; flex-shrink: 0; }
+        .logo-icon { width: 46px; height: 46px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(59,130,246,0.5); overflow: hidden; padding: 3px; }
+        .logo-icon img { width: 100%; height: 100%; object-fit: contain; }
+        .logo-text h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.5px; }
+        .logo-text span { font-size: 0.7rem; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; }
+
+        nav ul { display: flex; list-style: none; gap: 4px; flex-wrap: wrap; align-items: center; }
+        nav a { color: rgba(255,255,255,0.9); text-decoration: none; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; transition: var(--transition); white-space: nowrap; cursor: pointer; display: inline-flex; align-items: center; }
+        nav a:hover, nav a.active { background: var(--primary); color: white; }
+
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+        .theme-toggle { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: white; width: 42px; height: 42px; border-radius: 10px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: var(--transition); flex-shrink: 0; }
+        .theme-toggle:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+        .menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; padding: 4px; }
+
+        main { flex: 1; max-width: 1200px; margin: 0 auto; padding: 32px 24px; width: 100%; }
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title { font-size: 1.8rem; margin-bottom: 8px; color: var(--secondary); display: flex; align-items: center; gap: 12px; }
+        .section-subtitle { color: var(--text-light); margin-bottom: 28px; font-size: 1rem; }
+
+        .slider-container { background: var(--hero-bg); border-radius: var(--radius); padding: 0; margin-bottom: 36px; border: 1px solid var(--hero-border); overflow: hidden; position: relative; height: 220px; }
+        .slider-track { display: flex; height: 100%; animation: slideLoop 20s ease-in-out infinite; }
+        .slide { min-width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+        .slide h2 { font-size: 2.6rem; font-weight: 800; margin-bottom: 12px; letter-spacing: 1px; }
+        .slide p { font-size: 1.05rem; max-width: 700px; color: var(--text); }
+        .slide-youchat h2 { color: #1e40af; text-shadow: 0 2px 8px rgba(30,64,175,0.3); }
+        .slide-youchat { background: linear-gradient(135deg, rgba(30,64,175,0.20), rgba(30,64,175,0.08)); }
+        .slide-rapido h2 { color: #2563eb; }
+        .slide-seguro h2 { color: #10b981; }
+        .slide-moderno h2 { color: #f59e0b; }
+        .slide-rapido { background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(37,99,235,0.04)); }
+        .slide-seguro { background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); }
+        .slide-moderno { background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04)); }
+
+        @keyframes slideLoop {
+            0%, 18% { transform: translateX(0); }
+            25%, 43% { transform: translateX(-100%); }
+            50%, 68% { transform: translateX(-200%); }
+            75%, 93% { transform: translateX(-300%); }
+            100% { transform: translateX(0); }
+        }
+
+        .hero { background: var(--hero-bg); border-radius: var(--radius); padding: 40px; margin-bottom: 32px; border: 1px solid var(--hero-border); text-align: center; transition: var(--transition); }
+        .hero h2 { font-size: 2rem; color: var(--secondary); margin-bottom: 12px; }
+        .hero p { color: var(--text-light); font-size: 1.05rem; max-width: 680px; margin: 0 auto 24px; }
+        .hero-badge { display: inline-block; background: var(--primary); color: white; padding: 6px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 6px; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--primary); color: white; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; transition: var(--transition); border: none; cursor: pointer; font-size: 1rem; }
+        .btn:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.35); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-left: 10px; }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+        .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: var(--transition); border: 1px solid var(--border); display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+        .card-img { height: 160px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); overflow: hidden; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .card-img .icon { width: 60px; height: 60px; stroke-width: 1.5; }
+        .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .card-tag { display: inline-block; background: var(--card-tag-bg); color: var(--card-tag-text); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; align-self: flex-start; }
+        .card h3 { font-size: 1.15rem; margin-bottom: 8px; color: var(--secondary); }
+        .card p { color: var(--text-light); font-size: 0.9rem; flex: 1; margin-bottom: 16px; }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-light); border-top: 1px solid var(--border); padding-top: 12px; }
+        .card-meta span { display: inline-flex; align-items: center; gap: 4px; }
+
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+        .gallery-item { position: relative; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); aspect-ratio: 4/3; cursor: pointer; transition: var(--transition); background: var(--stat-bg); }
+        .gallery-item:hover { transform: scale(1.03); box-shadow: var(--shadow-hover); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: var(--transition); }
+        .gallery-item:hover img { transform: scale(1.08); }
+        .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42,0.9) 0%, transparent 60%); display: flex; align-items: flex-end; padding: 16px; color: white; opacity: 0; transition: var(--transition); }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-overlay h4 { font-size: 1rem; font-weight: 600; }
+        .gallery-overlay p { font-size: 0.8rem; opacity: 0.85; }
+
+        .forum-list { display: flex; flex-direction: column; gap: 12px; }
+        .forum-item { background: var(--card-bg); border-radius: var(--radius); padding: 20px 24px; display: flex; align-items: center; gap: 18px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: var(--transition); cursor: pointer; }
+        .forum-item:hover { border-color: var(--primary); transform: translateX(4px); }
+        .forum-avatar { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; flex-shrink: 0; }
+        .forum-info { flex: 1; }
+        .forum-info h4 { font-size: 1rem; margin-bottom: 4px; color: var(--secondary); }
+        .forum-info p { font-size: 0.85rem; color: var(--text-light); }
+        .forum-stats { display: flex; gap: 20px; text-align: center; flex-shrink: 0; }
+        .forum-stats div { font-size: 0.75rem; color: var(--text-light); }
+        .forum-stats strong { display: block; font-size: 1.1rem; color: var(--secondary); }
+
+        .legal-content, .faq-content, .tips-content, .changelog-content { background: var(--card-bg); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .legal-content h3, .faq-content h3, .tips-content h3, .changelog-content h3 { color: var(--secondary); margin: 24px 0 12px; font-size: 1.2rem; }
+        .legal-content h3:first-child, .faq-content h3:first-child, .tips-content h3:first-child, .changelog-content h3:first-child { margin-top: 0; }
+        .legal-content p, .faq-content p, .tips-content p, .changelog-content p { color: var(--text-light); margin-bottom: 12px; }
+        .legal-content ul, .tips-content ul, .changelog-content ul { list-style: none; padding: 0; margin-bottom: 12px; }
+        .legal-content ul li, .tips-content ul li, .changelog-content ul li { padding: 8px 0 8px 28px; position: relative; color: var(--text-light); }
+        .legal-content ul li::before, .tips-content ul li::before, .changelog-content ul li::before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: bold; }
+        .legal-content a, .faq-content a, .tips-content a, .changelog-content a { color: var(--primary); text-decoration: none; word-break: break-all; }
+        .legal-content a:hover, .faq-content a:hover, .tips-content a:hover, .changelog-content a:hover { text-decoration: underline; }
+
+        .last-update { display: block; background: rgba(220, 38, 38, 0.08); border-left: 4px solid var(--danger); padding: 14px 18px; border-radius: 8px; margin-top: 24px; color: var(--danger); font-weight: 600; font-size: 0.95rem; }
+
+        .accordion { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; background: var(--card-bg); }
+        .accordion-header { padding: 16px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--secondary); background: var(--card-bg); transition: var(--transition); font-size: 1rem; }
+        .accordion-header:hover { background: var(--stat-bg); }
+        .accordion-header .arrow { transition: transform 0.3s ease; font-size: 0.9rem; color: var(--text-light); }
+        .accordion.open .accordion-header .arrow { transform: rotate(180deg); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 20px; color: var(--text-light); background: var(--card-bg); }
+        .accordion.open .accordion-body { max-height: 20000px; padding: 0 20px 20px; }
+        .accordion-body p { margin-bottom: 10px; }
+
+        .tip-block { background: var(--stat-bg); border-left: 4px solid var(--primary); border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; }
+        .tip-block h4 { color: var(--primary); margin-bottom: 12px; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+        .tip-block p { color: var(--text); margin-bottom: 8px; }
+        .tip-block code { background: var(--card-bg); padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace; color: var(--primary); border: 1px solid var(--border); }
+
+        .telegram-box { background: var(--telegram-box-bg); border: 1px solid var(--telegram-box-border); border-radius: var(--radius); padding: 32px; text-align: center; margin-bottom: 24px; }
+        .telegram-box h3 { color: var(--secondary); font-size: 1.4rem; margin-bottom: 8px; }
+        .telegram-box p { color: var(--text-light); margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .telegram-icon { display: block; margin: 0 auto 8px; color: var(--primary); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-top: 24px; }
+        .stat-box { background: var(--stat-bg); border-radius: var(--radius); padding: 20px; text-align: center; transition: var(--transition); }
+        .stat-box .number { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .stat-box .label { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .social-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .social-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); transition: var(--transition); }
+        .social-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+        .social-card h4 { color: var(--secondary); margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .social-card a { display: block; color: var(--primary); text-decoration: none; padding: 6px 0; font-size: 0.9rem; word-break: break-all; transition: var(--transition); }
+        .social-card a:hover { color: var(--primary-dark); padding-left: 6px; }
+        .hashtags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+        .hashtag { background: var(--card-tag-bg); color: var(--card-tag-text); padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; }
+
+        .tutorial-step { background: var(--stat-bg); border-left: 4px solid var(--primary); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+        .tutorial-step strong { color: var(--primary); }
+
+        .anuncio-box { background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(6,182,212,0.08)); border: 2px dashed var(--primary); border-radius: var(--radius); padding: 32px; margin-bottom: 24px; }
+        .anuncio-box h3 { color: var(--primary); font-size: 1.5rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .anuncio-box p { color: var(--text); margin-bottom: 12px; }
+
+        .aniversario-box { background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(6,182,212,0.10)); border: 2px solid var(--primary); border-radius: var(--radius); padding: 40px; margin-bottom: 24px; text-align: center; position: relative; overflow: hidden; }
+        .aniversario-box h3 { color: var(--primary); font-size: 1.8rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .aniversario-box p { color: var(--text); margin-bottom: 16px; text-align: left; line-height: 1.7; }
+        .aniversario-box .fecha-destacada { display: inline-block; background: var(--primary); color: white; padding: 8px 20px; border-radius: 50px; font-weight: 700; margin: 16px 0; font-size: 1.1rem; }
+        .aniversario-box .gracias { font-size: 1.15rem; font-weight: 600; color: var(--primary); margin-top: 24px; }
+
+        .version-block { border-left: 4px solid var(--primary); background: var(--stat-bg); border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; }
+        .version-block h4 { color: var(--primary); font-size: 1.3rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .version-block .date { color: var(--text-light); font-size: 0.85rem; margin-bottom: 12px; display: block; }
+        .version-block ul { list-style: none; padding: 0; }
+        .version-block ul li { padding: 5px 0 5px 24px; position: relative; color: var(--text-light); font-size: 0.92rem; }
+        .version-block ul li::before { content: "✅"; position: absolute; left: 0; font-size: 0.8rem; }
+        .version-block.v140 { border-left-color: var(--primary); background: linear-gradient(90deg, rgba(37,99,235,0.10), transparent); }
+        .version-block.v140 h4 { color: var(--primary); }
+        .version-block.v140 ul li::before { content: "🔵"; }
+        .version-block.v130 { border-left-color: var(--danger); background: linear-gradient(90deg, rgba(220,38,38,0.08), transparent); }
+        .version-block.v130 h4 { color: var(--danger); }
+        .version-block.v130 ul li::before { content: "🔴"; }
+        .version-block.new { border-left-color: var(--success); background: linear-gradient(90deg, rgba(16,185,129,0.08), transparent); }
+        .version-block.new h4 { color: var(--success); }
+
+        .update-notes { background: var(--stat-bg); border: 2px solid var(--primary); border-radius: var(--radius); padding: 24px; margin-top: 24px; }
+        .update-notes h4 { color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-size: 1.15rem; }
+        .update-notes p { color: var(--text-light); }
+
+        .footer-signature { text-align: center; padding: 24px; background: var(--stat-bg); border-radius: var(--radius); margin-top: 24px; border: 1px solid var(--border); }
+        .footer-signature h3 { color: var(--primary); font-size: 1.5rem; margin-bottom: 4px; }
+        .footer-signature p { color: var(--text-light); margin: 4px 0; }
+        .footer-signature .author { color: var(--primary); font-weight: 600; margin-top: 12px; }
+
+        .contact-form { background: var(--card-bg); border-radius: var(--radius); padding: 32px; box-shadow: var(--shadow); border: 1px solid var(--border); max-width: 640px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: var(--secondary); }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; transition: var(--transition); background: var(--bg); color: var(--text); }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .contact-email-box { background: var(--telegram-box-bg); border: 1px solid var(--telegram-box-border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; text-align: center; }
+        .contact-email-box p { color: var(--text-light); margin-bottom: 8px; }
+        .contact-email-box a { color: var(--primary); font-size: 1.3rem; font-weight: 700; text-decoration: none; word-break: break-all; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+        .contact-email-box a:hover { text-decoration: underline; }
+
+        .staff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 20px; }
+        .staff-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; text-align: center; box-shadow: var(--shadow); transition: var(--transition); display: flex; flex-direction: column; align-items: center; }
+        .staff-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+        .staff-avatar { width: 120px; height: 120px; margin: 0 auto 18px; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35); position: relative; transition: var(--transition); overflow: hidden; }
+        .staff-card:hover .staff-avatar { transform: scale(1.05); box-shadow: 0 12px 32px rgba(37, 99, 235, 0.5); }
+        .staff-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; border: 3px solid var(--card-bg); background: var(--stat-bg); }
+        .staff-role-badge { position: absolute; bottom: 5px; right: 5px; width: 34px; height: 34px; background: var(--card-bg); border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: var(--primary); z-index: 2; }
+        .staff-role-badge .icon { width: 16px; height: 16px; }
+        .staff-card h3 { color: var(--secondary); font-size: 1.15rem; margin-bottom: 10px; font-weight: 700; line-height: 1.3; }
+        .staff-role { color: var(--primary); font-size: 0.85rem; font-weight: 600; background: var(--card-tag-bg); padding: 6px 14px; border-radius: 50px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 14px; transition: var(--transition); }
+        .staff-card:hover .staff-role { background: var(--primary); color: white; }
+        .staff-bio { color: var(--text-light); font-size: 0.88rem; line-height: 1.5; margin-bottom: 20px; flex: 1; }
+        .staff-social { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding-top: 16px; border-top: 1px solid var(--border); width: 100%; }
+        .social-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; background: var(--stat-bg); border: 1px solid var(--border); transition: var(--transition); color: var(--text); }
+        .social-icon:hover { transform: translateY(-3px) scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.15); color: white; }
+        .social-icon.telegram:hover { background: #0088cc; border-color: #0088cc; }
+        .social-icon.twitter:hover  { background: #000000; border-color: #000000; }
+        .social-icon.mastodon:hover { background: #6364ff; border-color: #6364ff; }
+        .social-icon.email:hover    { background: var(--primary); border-color: var(--primary); }
+        .social-icon .icon { width: 18px; height: 18px; }
+
+        footer { background: var(--footer-bg); color: var(--footer-text); padding: 40px 24px 20px; margin-top: auto; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; margin-bottom: 32px; }
+        .footer-col h4 { color: white; margin-bottom: 16px; font-size: 1rem; }
+        .footer-col a { display: block; color: var(--footer-text); text-decoration: none; padding: 5px 0; font-size: 0.9rem; transition: var(--transition); cursor: pointer; word-break: break-all; }
+        .footer-col a:hover { color: var(--footer-text-hover); padding-left: 4px; }
+
+        .footer-social { max-width: 1200px; margin: 0 auto 24px; padding: 24px 0; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .footer-social h4 { color: white; margin-bottom: 16px; font-size: 1rem; }
+        .footer-social-icons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .footer-social-icons a { width: 46px; height: 46px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; color: white; transition: var(--transition); }
+        .footer-social-icons a:hover { transform: translateY(-4px) scale(1.08); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .footer-social-icons a .icon { width: 22px; height: 22px; }
+        .footer-social-icons a.youtube:hover { background: #ff0000; border-color: #ff0000; }
+        .footer-social-icons a.whatsapp:hover { background: #25d366; border-color: #25d366; }
+        .footer-social-icons a.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-color: #dc2743; }
+        .footer-social-icons a.x-twitter:hover { background: #000000; border-color: #000000; }
+        .footer-social-icons a.telegram:hover { background: #0088cc; border-color: #0088cc; }
+        .footer-social-icons a.mastodon:hover { background: #6364ff; border-color: #6364ff; }
+        .footer-social-icons a.todus:hover { background: #00a8e8; border-color: #00a8e8; }
+        .footer-social-icons a.email:hover { background: var(--primary); border-color: var(--primary); }
+
+        .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 20px; text-align: center; font-size: 0.85rem; line-height: 1.8; }
+
+        .scroll-buttons { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
+        .scroll-btn { width: 50px; height: 50px; background: var(--primary); color: white; border: none; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 16px rgba(37,99,235,0.4); transition: var(--transition); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; }
+        .scroll-btn.visible { opacity: 1; visibility: visible; }
+        .scroll-btn:hover { background: var(--primary-dark); transform: translateY(-4px); }
+        .scroll-btn:active { transform: translateY(-2px); }
+
+        .update-toast { position: fixed; top: 90px; right: 24px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 8px 24px rgba(37,99,235,0.4); display: none; align-items: center; gap: 12px; z-index: 200; animation: slideDown 0.4s ease; font-weight: 600; }
+        .update-toast.visible { display: flex; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 1100px) {
+            .header-container { height: auto; padding: 12px 0; flex-wrap: wrap; }
+            .menu-toggle { display: block; }
+            nav { width: 100%; display: none; order: 3; }
+            nav.open { display: block; }
+            nav ul { flex-direction: column; gap: 4px; padding: 8px 0; }
+            nav a { display: flex; padding: 12px 16px; font-size: 0.95rem; }
+        }
+        @media (max-width: 600px) {
+            main { padding: 20px 16px; }
+            .section-title { font-size: 1.4rem; }
+            .hero { padding: 28px 20px; }
+            .hero h2 { font-size: 1.5rem; }
+            .slide h2 { font-size: 1.8rem; }
+            .slide p { font-size: 0.9rem; }
+            .slider-container { height: 240px; }
+            .grid { grid-template-columns: 1fr; }
+            .gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .forum-item { flex-direction: column; align-items: flex-start; }
+            .forum-stats { width: 100%; justify-content: space-around; }
+            .legal-content, .faq-content, .tips-content, .changelog-content, .contact-form, .telegram-box, .anuncio-box, .aniversario-box { padding: 20px 16px; }
+            .btn-outline { margin-left: 0; margin-top: 10px; }
+            .scroll-btn { width: 44px; height: 44px; }
+            .staff-grid { grid-template-columns: 1fr; }
+            .staff-avatar { width: 100px; height: 100px; }
+            .staff-card { padding: 24px 20px; }
+            .aniversario-box h3 { font-size: 1.4rem; flex-direction: column; }
+            .footer-social-icons a { width: 42px; height: 42px; }
+            .update-toast { right: 12px; left: 12px; top: 80px; }
+        }
+        .text-center { text-align: center; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-10 { margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo" onclick="showSection('inicio'); return false;">
+                <div class="logo-icon"><img src="img/logo.png" alt="YouChat"></div>
+                <div class="logo-text">
+                    <h1>YouChat</h1>
+                    <span>youchat.web.cu</span>
+                </div>
+            </a>
+
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="#" class="active" data-section="inicio" onclick="showSection('inicio'); return false;"><i data-lucide="home" class="icon"></i> Inicio</a></li>
+                    <li><a href="#" data-section="noticias" onclick="showSection('noticias'); return false;"><i data-lucide="newspaper" class="icon"></i> Noticias</a></li>
+                    <li><a href="#" data-section="fotos" onclick="showSection('fotos'); return false;"><i data-lucide="image" class="icon"></i> Fotos</a></li>
+                    <li><a href="#" data-section="memes" onclick="showSection('memes'); return false;"><i data-lucide="smile" class="icon"></i> Memes</a></li>
+                    <li><a href="#" data-section="foros" onclick="showSection('foros'); return false;"><i data-lucide="message-square" class="icon"></i> Foros</a></li>
+                    <li><a href="#" data-section="tips" onclick="showSection('tips'); return false;"><i data-lucide="lightbulb" class="icon"></i> Tips</a></li>
+                    <li><a href="#" data-section="faq" onclick="showSection('faq'); return false;"><i data-lucide="help-circle" class="icon"></i> FAQ</a></li>
+                    <li><a href="#" data-section="tutorial" onclick="showSection('tutorial'); return false;"><i data-lucide="book-open" class="icon"></i> Tutorial</a></li>
+                    <li><a href="#" data-section="anuncio" onclick="showSection('anuncio'); return false;"><i data-lucide="megaphone" class="icon"></i> Anuncio</a></li>
+                    <li><a href="#" data-section="aniversario" onclick="showSection('aniversario'); return false;"><i data-lucide="party-popper" class="icon"></i> Aniversario</a></li>
+                    <li><a href="#" data-section="links" onclick="showSection('links'); return false;"><i data-lucide="link" class="icon"></i> Links</a></li>
+                    <li><a href="#" data-section="telegram" onclick="showSection('telegram'); return false;"><i data-lucide="send" class="icon"></i> Telegram</a></li>
+                    <li><a href="#" data-section="acerca" onclick="showSection('acerca'); return false;"><i data-lucide="info" class="icon"></i> Acerca de</a></li>
+                    <li><a href="#" data-section="historial" onclick="showSection('historial'); return false;"><i data-lucide="history" class="icon"></i> Historial</a></li>
+                    <li><a href="#" data-section="staff" onclick="showSection('staff'); return false;"><i data-lucide="users" class="icon"></i> Staff</a></li>
+                    <li><a href="#" data-section="terminos" onclick="showSection('terminos'); return false;"><i data-lucide="file-text" class="icon"></i> Términos</a></li>
+                    <li><a href="#" data-section="privacidad" onclick="showSection('privacidad'); return false;"><i data-lucide="lock" class="icon"></i> Privacidad</a></li>
+                    <li><a href="#" data-section="contacto" onclick="showSection('contacto'); return false;"><i data-lucide="mail" class="icon"></i> Contáctenos</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" aria-label="Cambiar tema"><i data-lucide="moon" class="icon"></i></button>
+                <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menú"><i data-lucide="menu" class="icon-lg"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== TOAST DE ACTUALIZACIÓN ===== -->
+    <div class="update-toast" id="updateToast">
+        <i data-lucide="download-cloud" class="icon-lg"></i>
+        <span>Nueva versión disponible. Actualizando...</span>
+    </div>
+
+    <!-- ===== MAIN ===== -->
+    <main>
+
+        <!-- ===== INICIO ===== -->
+        <section id="inicio" class="section active">
+            <div class="slider-container">
+                <div class="slider-track">
+                    <div class="slide slide-youchat">
+                        <h2>YouChat</h2>
+                        <p><i data-lucide="heart" class="icon"></i> Con YouChat tendrás la mejor opción para estar conectado con todo el mundo.</p>
+                    </div>
+                    <div class="slide slide-rapido">
+                        <h2>Rápido</h2>
+                        <p><i data-lucide="rocket" class="icon"></i> Con YouChat usted se Comunica con las personas, de manera <strong>Rápida</strong> en tiempo real.</p>
+                    </div>
+                    <div class="slide slide-seguro">
+                        <h2>Seguro</h2>
+                        <p><i data-lucide="shield" class="icon"></i> YouChat es <strong>Seguro</strong>, y su privacidad está a salvo con nosotros.</p>
+                    </div>
+                    <div class="slide slide-moderno">
+                        <h2>Moderno</h2>
+                        <p><i data-lucide="layout" class="icon"></i> Conversa bajo un interfaz cómodo, <strong>Moderno</strong> y agradable.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero">
+                <span class="hero-badge"><i data-lucide="globe" class="icon"></i> youchat.web.cu</span>
+                <h2>Bienvenido a YouChat</h2>
+                <p>Grupo Oficial de la app Cubana de Mensajería Instantánea a través del Correo Electrónico YouChat. Donde les informamos sobre noticias, fotos, memes, foros, tips, acerca de, actualizaciones de la app a la comunidad. YouChat su mejor Opción para estar en contacto y comunicado con Amigos y Familiares.</p>
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" class="btn"><i data-lucide="users" class="icon"></i> Grupo Oficial</a>
+                <a href="https://t.me/YouChat_Canal_Oficial" target="_blank" rel="noopener" class="btn btn-outline"><i data-lucide="megaphone" class="icon"></i> Canal Oficial</a>
+            </div>
+
+            <h2 class="section-title"><i data-lucide="newspaper" class="icon-lg"></i> Últimas Noticias</h2>
+            <p class="section-subtitle">Lo más reciente de nuestra comunidad.</p>
+            <div class="grid" id="homeNoticias"></div>
+
+            <h2 class="section-title mt-20"><i data-lucide="image" class="icon-lg"></i> Galería Destacada</h2>
+            <p class="section-subtitle">Momentos y fotos de la comunidad.</p>
+            <div class="gallery" id="homeFotos"></div>
+
+            <h2 class="section-title mt-20"><i data-lucide="smile" class="icon-lg"></i> Memes Destacados</h2>
+            <p class="section-subtitle">Los memes más divertidos del Grupo Oficial.</p>
+            <div class="gallery" id="homeMemes"></div>
+
+            <h2 class="section-title mt-20"><i data-lucide="message-square" class="icon-lg"></i> Foros Destacados</h2>
+            <p class="section-subtitle">Conversaciones activas.</p>
+            <div class="forum-list" id="homeForos"></div>
+        </section>
+
+        <!-- ===== NOTICIAS ===== -->
+        <section id="noticias" class="section">
+            <h2 class="section-title"><i data-lucide="newspaper" class="icon-lg"></i> Noticias</h2>
+            <p class="section-subtitle">Todas las noticias y actualizaciones de YouChat.</p>
+            <div class="grid" id="allNoticias"></div>
+        </section>
+
+        <!-- ===== FOTOS ===== -->
+        <section id="fotos" class="section">
+            <h2 class="section-title"><i data-lucide="image" class="icon-lg"></i> Galería de Fotos</h2>
+            <p class="section-subtitle">Imágenes compartidas por la comunidad de YouChat.</p>
+            <div class="gallery" id="allFotos"></div>
+        </section>
+
+        <!-- ===== MEMES ===== -->
+        <section id="memes" class="section">
+            <h2 class="section-title"><i data-lucide="smile" class="icon-lg"></i> Memes YouChat</h2>
+            <p class="section-subtitle">Los memes compartidos en el Grupo Oficial de Telegram.</p>
+
+            <div class="telegram-box">
+                <i data-lucide="party-popper" class="icon icon-xl telegram-icon"></i>
+                <h3>¡Ríe con los memes de la comunidad!</h3>
+                <p>Estos memes son compartidos por los YouChateros en el Grupo Oficial de Telegram. ¡Únete y comparte los tuyos!</p>
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" class="btn"><i data-lucide="users" class="icon"></i> Ir al Grupo Oficial</a>
+            </div>
+
+            <div class="gallery" id="allMemes"></div>
+        </section>
+
+        <!-- ===== FOROS ===== -->
+        <section id="foros" class="section">
+            <h2 class="section-title"><i data-lucide="message-square" class="icon-lg"></i> Foros</h2>
+            <p class="section-subtitle">Participa en las discusiones de la comunidad, se participe de las conversaciones y debates sobre temas relevantes de YouChat.</p>
+            <div class="forum-list" id="allForos"></div>
+        </section>
+
+        <!-- ===== TIPS ===== -->
+        <section id="tips" class="section">
+            <h2 class="section-title"><i data-lucide="lightbulb" class="icon-lg"></i> Tips YouChateros</h2>
+            <p class="section-subtitle">Consejos útiles para aprovechar al máximo a YouChat.</p>
+            <div class="tips-content" id="allTips"></div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section id="faq" class="section">
+            <h2 class="section-title"><i data-lucide="help-circle" class="icon-lg"></i> Preguntas Frecuentes</h2>
+            <p class="section-subtitle">Respuestas a las dudas más comunes sobre YouChat.</p>
+            <div class="faq-content" id="allFaq"></div>
+        </section>
+
+        <!-- ===== TUTORIAL ===== -->
+        <section id="tutorial" class="section">
+            <h2 class="section-title"><i data-lucide="book-open" class="icon-lg"></i> Tutorial</h2>
+            <p class="section-subtitle">Aprende a usar YouChat y cómo crear una cuenta de correo Nauta paso a paso.</p>
+
+            <div class="legal-content">
+                <h3><i data-lucide="mail" class="icon"></i> ¿Tutorial Cómo crear una cuenta de correo Nauta?</h3>
+
+                <h3><i data-lucide="alert-circle" class="icon"></i> TENER EN CUENTA:</h3>
+                <ul>
+                    <li>Tener una línea/SIM contratada a tu nombre (carnet de identidad).</li>
+                    <li>NO tener ya una cuenta de correo nauta.cu contratada a tu nombre, solo puedes tener una cuenta de correo asociada a tu carnet de identidad.</li>
+                    <li>Una conexión de WiFi nacional o datos móviles, NO hace falta tener Internet ni paquetes comprados, las páginas de ETECSA son GRATIS.</li>
+                </ul>
+
+                <h3><i data-lucide="list-checks" class="icon"></i> PASOS:</h3>
+                <div class="tutorial-step">
+                    <strong>Paso 1:</strong> Ir al portal <a href="https://www.nauta.cu" target="_blank" rel="noopener">www.nauta.cu</a> Ir al portal www.nauta.cu y registrarse con # de teléfono/SIM y carnet de identidad (recibirás un SMS con un código para confirmar que eres el dueño del # de teléfono).
+                </div>
+                <div class="tutorial-step">
+                    <strong>Paso 2:</strong> Inicia sesión en <a href="https://www.nauta.cu" target="_blank" rel="noopener">www.nauta.cu</a> con la cuenta que acabas de crear, dentro hay una opción para crear una cuenta de navegación .com.cu
+                </div>
+                <div class="tutorial-step">
+                    <strong>Paso 3:</strong> Luego de creada la cuenta .com.cu ve a <a href="https://www.portal.nauta.cu" target="_blank" rel="noopener">www.portal.nauta.cu</a> e inicia sesión con la cuenta .com.cu recién creada.
+                </div>
+                <div class="tutorial-step">
+                    <strong>Paso 4:</strong> Una vez dentro de <a href="https://www.portal.nauta.cu" target="_blank" rel="noopener">www.portal.nauta.cu</a> hay una opción de crear cuenta de correo.
+                </div>
+
+                <p class="mt-20"><strong><i data-lucide="check-circle" class="icon"></i> Ya tienes tu cuenta de correo nauta, ahora puedes usarla en YouChat.</strong></br>
+                    Comparte con tus amigos que aún no tengan cuenta de correo nauta.</p>
+            </div>
+        </section>
+
+        <!-- ===== ANUNCIO ===== -->
+        <section id="anuncio" class="section">
+            <h2 class="section-title"><i data-lucide="megaphone" class="icon-lg"></i> Anuncio</h2>
+            <p class="section-subtitle">Ayúdanos a crecer en la comunidad YouChatera compartiendo los link de su Grupo y Canal y la app de YouChat.</p>
+
+            <div class="anuncio-box">
+                <h3><i data-lucide="megaphone" class="icon-lg"></i> Anuncio:</h3>
+                <p>Si le gusta la App YouChat y que la conozca más usuarios, esto puede cambiar:</p>
+                <p><i data-lucide="check" class="icon"></i> Si te gusta el proyecto, si quieres ayudarnos, si quieres sentirte útil, si crees que YouChat es una buena opción y quieres que el proyecto siga creciendo... Comparte el enlace de este grupo con todos tus amigos, Grupos, Canales y dónde sea que tengas alcance, si nos ayudas juntos podemos crecer.</p>
+                <p><i data-lucide="check" class="icon"></i> Esto nos ahorraría tiempo porque no tendríamos que andar anunciando la App o noticias por todos lados, la información se transmitirá en un solo lugar. Aparte de que también habría una mayor comunidad en el Grupo para hacer amigos en YouChat.</p>
+                <p>Todo depende de usted, ayúdanos a crecer.</p>
+                <p><strong>Toca los siguientes link:</strong></p>
+                <p><i data-lucide="users" class="icon"></i> Link del Grupo por Telegram de YouChat.<br>
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener">https://t.me/YouChat_Grupo_Oficial</a></p>
+                <p><i data-lucide="megaphone" class="icon"></i> Link del Canal por Telegram de YouChat.<br>
+                <a href="https://t.me/YouChat_Canal_Oficial" target="_blank" rel="noopener">https://t.me/YouChat_Canal_Oficial</a></p>
+
+                <div class="hashtags mt-20">
+                    <span class="hashtag">#YouChatVive</span>
+                    <span class="hashtag">#YouChaterosLuchando</span>
+                    <span class="hashtag">#YouChatAppCubana100%</span>
+                    <span class="hashtag">#SiempreYouChat</span>
+                    <span class="hashtag">#VamosPorMás</span>
+                </div>
+
+                <p class="mt-20"><strong>YouChat <i data-lucide="heart" class="icon"></i></strong><br>Rápido, Seguro y Moderno</p>
+            </div>
+
+            <div class="text-center mt-20">
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" class="btn"><i data-lucide="users" class="icon"></i> Grupo Oficial</a>
+                <a href="https://t.me/YouChat_Canal_Oficial" target="_blank" rel="noopener" class="btn btn-outline"><i data-lucide="megaphone" class="icon"></i> Canal Oficial</a>
+            </div>
+        </section>
+
+        <!-- ===== ANIVERSARIO ===== -->
+        <section id="aniversario" class="section">
+            <h2 class="section-title"><i data-lucide="party-popper" class="icon-lg"></i> Aniversario de YouChat</h2>
+            <p class="section-subtitle">Celebrando un año más de YouChat en el mundo</p>
+
+            <div class="aniversario-box">
+                <h3><i data-lucide="cake" class="icon-xl"></i> ¡Aniversario de YouChat!</h3>
+                <p style="text-align: center; font-size: 1.15rem; font-weight: 600; margin-bottom: 20px;">🎊 Aniversario de YouChat de haber sido lanzada al Mundo 🌏</p>
+
+                <p>Nos enorgullece contar que un <span class="fecha-destacada">14 de Noviembre del 2019</span> 😃 este proyecto que nació en pleno confinamiento en la covid, ya cumple Año de haber sido publicada en Apklis 🥳.</p>
+
+                <p>Es de ensueño mirar atrás y ver cuanta evolución hemos logrado, cuantos usuarios apoyando el proyecto, cuantos tropiezos en el camino, cuanta experiencia ganada pero sobre todo cuántas amistades ganadas gracias a la plataforma.</p>
+
+                <p>Tuvimos caídas, personas que desestimaron el proyecto, muchos obstáculos en el camino pero las horas de esfuerzo y dedicación han dado su fruto, hoy en día contamos con muchísimos usuarios y un gran servicio que nos respalda... 🙊 Esto es solo el comienzo, YouChat le queda muchos servicios que añadir aún y un gran camino que recorrer junto a sus Usuarios. 👍</p>
+
+                <p class="gracias">🎉 Gracias a todos por el Apoyo brindado y quédense 😏, porque ahora es que esto Empieza 👌</p>
+
+                <div class="hashtags mt-20" style="justify-content: center;">
+                    <span class="hashtag">#YouChatVive</span>
+                    <span class="hashtag">#YouChaterosLuchando</span>
+                    <span class="hashtag">#YouChatAppCubana100%</span>
+                    <span class="hashtag">#SiempreYouChat</span>
+                    <span class="hashtag">#VamosPorMás</span>
+                </div>
+
+                <p class="mt-20" style="text-align: center; font-size: 0.9rem; color: var(--text-light);">
+                    Todos los derechos reservados 2026 ©️<br>
+                    Copyright ©️ 2026 all the reserved by @Milkár<br><br>
+                    Marca registrada YouChat ®️©️<br>
+                    YouChat registered mark ®️©️
+                </p>
+            </div>
+
+            <div class="text-center mt-20">
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" class="btn"><i data-lucide="users" class="icon"></i> Únete a la Celebración</a>
+            </div>
+        </section>
+
+        <!-- ===== LINKS REDES SOCIALES ===== -->
+        <section id="links" class="section">
+            <h2 class="section-title"><i data-lucide="link" class="icon-lg"></i> Link</h2>
+            <p class="section-subtitle">Redes Sociales Oficiales de YouChat</p>
+
+            <div class="legal-content">
+                <p>Aquí en esta sección están compilados todos los Link de las Redes Sociales Oficiales de Promoción y Divulgación de YouChat, para el usuario que deseé interactuar en sus Oficiales redes sociales, Internacionales y Nacionales son las Siguientes.</p>
+
+                <div class="social-grid">
+                    <div class="social-card">
+                        <h4><i data-lucide="youtube" class="icon"></i> YouTube</h4>
+                        <a href="https://youtube.com/@app_youchat?si=sohuJv4lADJ3i8_h" target="_blank" rel="noopener">https://youtube.com/@app_youchat</a>
+                    </div>
+
+                    <div class="social-card">
+                        <h4><i data-lucide="message-circle" class="icon"></i> WhatsApp</h4>
+                        <a href="https://chat.whatsapp.com/Le4CRk0T8MdLOFBrvj46Ck?s=cl&p=a&ilr=4" target="_blank" rel="noopener">https://chat.whatsapp.com/Le4CRk0T8MdLOFBrvj46Ck</a>
+                        <a href="https://chat.whatsapp.com/D7WiEyLrha03iCbDbj63FL" target="_blank" rel="noopener">https://chat.whatsapp.com/D7WiEyLrha03iCbDbj63FL</a>
+                    </div>
+
+                    <div class="social-card">
+                        <h4><i data-lucide="instagram" class="icon"></i> Instagram</h4>
+                        <a href="https://www.instagram.com/app_youchat?igsh=MXY1ejNlbTg5bDkzZA==" target="_blank" rel="noopener">https://www.instagram.com/app_youchat</a>
+                    </div>
+
+                    <div class="social-card">
+                        <h4><i data-lucide="twitter" class="icon"></i> X (Twitter)</h4>
+                        <a href="https://x.com/App_YouChat" target="_blank" rel="noopener">https://x.com/App_YouChat</a>
+                        <a href="https://x.com/Milkar_Lixan" target="_blank" rel="noopener">https://x.com/Milkar_Lixan</a>
+                    </div>
+
+                    <div class="social-card">
+                        <h4><i data-lucide="send" class="icon"></i> Telegram</h4>
+                        <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener">https://t.me/YouChat_Grupo_Oficial</a>
+                        <a href="https://t.me/YouChat_Canal_Oficial" target="_blank" rel="noopener">https://t.me/YouChat_Canal_Oficial</a>
+                    </div>
+
+                    <div class="social-card">
+                        <h4><i data-lucide="message-square" class="icon"></i> toDus</h4>
+                        <a href="https://chat.todus.cu/61fc6d87c6864e4ab2fac51cd6540d13" target="_blank" rel="noopener">https://chat.todus.cu/61fc6d87c6864e4ab2fac51cd6540d13</a>
+                        <a href="https://chat.todus.cu/@a0337bbd7e064199b235fa74005bd390" target="_blank" rel="noopener">https://chat.todus.cu/@a0337bbd7e064199b235fa74005bd390</a>
+                    </div>
+
+                    <div class="social-card">
+                        <h4><i data-lucide="globe" class="icon"></i> Mastodon social</h4>
+                        <a href="https://mastodon.social/@Milkar_Android" target="_blank" rel="noopener">@Milkar_Android@mastodon.social</a>
+                        <a href="https://mastodon.social/@YouChat" target="_blank" rel="noopener">@YouChat@mastodon.social</a>
+                    </div>
+                </div>
+
+                <div class="hashtags mt-20">
+                    <span class="hashtag">YouChatVive</span>
+                    <span class="hashtag">#YouChaterosLuchando</span>
+                    <span class="hashtag">#YouChatAppCubana100%</span>
+                    <span class="hashtag">#SiempreYouChat</span>
+                    <span class="hashtag">#VamosPorMás</span>
+                </div>
+
+                <p class="mt-20 text-center"><strong>YouChat <i data-lucide="heart" class="icon"></i></strong><br>Rápido, Seguro y Moderno</p>
+            </div>
+        </section>
+
+        <!-- ===== TELEGRAM ===== -->
+        <section id="telegram" class="section">
+            <h2 class="section-title"><i data-lucide="send" class="icon-lg"></i> Telegram Oficial</h2>
+            <p class="section-subtitle">Únete a nuestra comunidad en Telegram</p>
+
+            <div class="telegram-box">
+                <i data-lucide="users" class="icon icon-xl telegram-icon"></i>
+                <h3>Grupo Oficial de YouChat</h3>
+                <p>Siéntate libre y expresa su Opinión en el Grupo, ya contamos con 79 miembros, 19 en línea.</p>
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" class="btn"><i data-lucide="users" class="icon"></i> Unirse al Grupo Oficial</a>
+            </div>
+
+            <div class="telegram-box">
+                <i data-lucide="megaphone" class="icon icon-xl telegram-icon"></i>
+                <h3>Canal Oficial de YouChat</h3>
+                <p>En el Canal recibirás noticias, anuncios y actualizaciones directamente en el Canal de Telegram.</p>
+                <a href="https://t.me/YouChat_Canal_Oficial" target="_blank" rel="noopener" class="btn"><i data-lucide="megaphone" class="icon"></i> Unirse al Canal Oficial</a>
+            </div>
+
+            <div class="legal-content">
+                <h3>¿Por qué unirte a nuestros canales de Telegram?</h3>
+                <ul>
+                    <li>Soporte y divulgación de la app y sus futuras versiones.</li>
+                    <li>Recibe noticias y anuncios al instante.</li>
+                    <li>Participa en debates con la comunidad.</li>
+                    <li>Ayuda sobre dudas y reporte a los Administradores sobre la app.</li>
+                    <li>Contenido exclusivo para los miembros.</li>
+                    <li>Sin spam, solo información relevante.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ===== ACERCA DE ===== -->
+        <section id="acerca" class="section">
+            <h2 class="section-title"><i data-lucide="info" class="icon-lg"></i> Acerca de YouChat</h2>
+            <p class="section-subtitle">Conoce más sobre nuestra plataforma.</p>
+
+            <div class="legal-content">
+                <h3>¿Qué es YouChat?</h3>
+                <p>YouChat es la <strong>app Cubana de Mensajería Instantánea a través del Correo Electrónico</strong>. Desde <strong>youchat.web.cu</strong> ofrecemos noticias, galería de fotos, memes, foros de discusión, tips y canales de Telegram.</p>
+
+                <h3>Nuestras Características</h3>
+                <ul>
+                    <li>Mensajería instantánea a través del correo electrónico.</li>
+                    <li>Encriptación de extremo a extremo opcional.</li>
+                    <li>Now (Estados) con seguidores y reacciones.</li>
+                    <li>Servicio de Post con calificación por tipo de usuario.</li>
+                    <li>Bandeja de entrada en modalidad Chat o tradicional.</li>
+                    <li>Soporte de Sticker (tgs, webp, jpg, png y gif)</li>
+                    <li>Noticias actualizadas sobre la app a la comunidad.</li>
+                    <li>Galería de fotos y memes compartidos por los usuarios.</li>
+                    <li>Foros de discusión organizados por temas.</li>
+                    <li>Tips y tutoriales para aprovechar al máximo a YouChat.</li>
+                    <li>Grupo de Staff al servicio de los usuarios.</li>
+                    <li>Grupo y Canal oficial de Telegram integrados.</li>
+                    <li>Interfaz ligera y rápida, con modo Claro y Oscuro.</li>
+                </ul>
+
+                <h3>Nuestra Misión</h3>
+                <p>Seguir dando soporte y divulgación a la App de YouChat y a las futuras versiones, fomentando el diálogo constructivo en la comunidad digital cubana y del mundo.</p>
+
+                <div class="stats-grid">
+                    <div class="stat-box"><div class="number">79+</div><div class="label">Miembros Telegram</div></div>
+                    <div class="stat-box"><div class="number">350+</div><div class="label">Noticias</div></div>
+                    <div class="stat-box"><div class="number">120+</div><div class="label">Fotos</div></div>
+                    <div class="stat-box"><div class="number">48</div><div class="label">Foros Activos</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== HISTORIAL DE CAMBIOS ===== -->
+        <section id="historial" class="section">
+            <h2 class="section-title"><i data-lucide="history" class="icon-lg"></i> Historial de Cambios</h2>
+            <p class="section-subtitle">Registro cronológico de todas las mejoras y funciones añadidas.</p>
+
+            <div class="changelog-content">
+                <p>Historial de cambios y actualizaciones.</p>
+                <p>Registro cronológico de todas las mejoras y funciones añadidas a la Web Plana de YouChat, desde su primera versión hasta la actualidad.</p>
+
+                <div class="version-block v140 mt-20">
+                    <h4><i data-lucide="sparkles" class="icon"></i> Versión 1.4.0</h4>
+                    <span class="date">Última actualización</span>
+                    <ul>
+                        <li>Actualizado el contenido completo de la sección Acerca de.</li>
+                        <li>Actualizado el contenido completo de la sección FAQ con las 26 preguntas oficiales.</li>
+                        <li>Actualizado el contenido completo de la sección Tips con los 5 Pack oficiales.</li>
+                        <li>Cambiado el icono del pajarito de Twitter por el icono de X en el footer.</li>
+                        <li>Mantenido el color azul característico de YouChat en todos los botones.</li>
+                    </ul>
+                </div>
+
+                <div class="version-block v130">
+                    <h4><i data-lucide="sparkles" class="icon"></i> Versión 1.3.0</h4>
+                    <span class="date">Última actualización</span>
+                    <ul>
+                        <li>Agregado favicon.ico generado desde el PNG del logo de YouChat.</li>
+                        <li>Creado archivo manifest.json para que la web se vea como app en el móvil (PWA).</li>
+                        <li>Creado archivo .htaccess para redireccionar a HTTPS y mejorar la seguridad.</li>
+                        <li>Creado archivo service-worker.js para actualización automática de la web.</li>
+                        <li>Creado archivo robots.txt para indexación en buscadores.</li>
+                        <li>Incorporadas todas las fotos del Staff en formato PNG optimizadas.</li>
+                        <li>Incorporado el logo de YouChat en formato PNG para el header y favicon.</li>
+                        <li>Incorporados los memes en formato PNG a la sección Memes.</li>
+                        <li>Incorporadas imágenes a las secciones Noticias, Fotos, Términos y Privacidad.</li>
+                        <li>Reordenado el Staff: Milkár, Disney, Luis Miguel y Dariel.</li>
+                        <li>Actualizado nombre de Miguel a Luis Miguel Torres Díaz.</li>
+                        <li>Agregada fecha de última actualización en Términos y Privacidad.</li>
+                        <li>Agregada nota informativa sobre actualizaciones automáticas en el Historial.</li>
+                        <li>Creadas las carpetas img/, styles/ y scripts/ debidamente organizadas.</li>
+                        <li>Mantenido el color azul característico de YouChat en todos los botones.</li>
+                    </ul>
+                </div>
+
+                <div class="version-block new">
+                    <h4><i data-lucide="sparkles" class="icon"></i> Versión 1.2.0</h4>
+                    <ul>
+                        <li>Reemplazados todos los emojis por iconos SVG de Lucide Icons.</li>
+                        <li>Agregado favicon.png con el logo oficial de YouChat.</li>
+                        <li>Añadida nueva sección "🎉 Aniversario de YouChat".</li>
+                        <li>Integrado formulario de Contáctenos con envío directo a maniabon.76@gmail.com.</li>
+                        <li>Añadidos iconos de redes sociales al final del footer con enlaces integrados.</li>
+                        <li>Mantenido el color azul característico de YouChat en todos los botones.</li>
+                        <li>Mejoras visuales generales y optimización del rendimiento.</li>
+                    </ul>
+                </div>
+
+                <div class="version-block">
+                    <h4>Versión 1.1.0</h4>
+                    <ul>
+                        <li>Adicionado la Sección Staff de YouChat.</li>
+                        <li>Adicionado el logo de YouChat a la Web Plana.</li>
+                        <li>Adicionado preguntas y respuestas a algunas secciones.</li>
+                        <li>Añadidas las fotos de las secciones de fotos, memes y noticia.</li> 
+                        <li>Añadida nueva pantalla "YouChat" al slider principal.</li>
+                        <li>Varias mejoras visuales menores.</li>
+                        <li>Corregido algunos errores menores.</li>
+                    </ul>
+                </div>
+
+                <div class="version-block">
+                    <h4>Versión 1.0.0</h4>
+                    <span class="date">📅 Lanzamiento inicial</span>
+                    <ul>
+                        <li>Implementado el Botón de Ajustes.</li>
+                        <li>Implementado el Tema claro y oscuro.</li>
+                        <li>Implementado los Botones Scroll flotante.</li>
+                        <li>Implementado el color Azul característico de YouChat.</li>
+                        <li>Implementada 3 Pantallas en movimiento con el Eslogan de YouChat.</li>
+                        <li>Añadido Preguntas frecuentes o FAQ.</li>
+                        <li>Agregado firma Digital y derecho de Autor Copyright</li>
+                        <li>Añadido Política de privacidad.</li>
+                        <li>Añadido Términos y Condiciones.</li>
+                        <li>Añadido Historial de Cambios.</li>
+                        <li>Agregado los link del Grupo y Canal de YouChat en Telegram.</li>
+                        <li>Agregado la opción de los Tips con 5 Pack incluidos.</li>
+                        <li>Agregado la sección Acerca de, Contáctenos, noticias, Memes, fotos, Telegram y foros.</li>
+                        <li>Agregado la sección Acerca de sobre la app de YouChat.</li>
+                        <li>Agregado la sección Contáctenos.</li>
+                        <li>Añadió el botón de Inicio.</li>
+                        <li>Añadió el botón de Noticias.</li>
+                        <li>Añadió el botón de Memes.</li>
+                        <li>Añadió el botón de Fotos.</li>
+                        <li>Añadió el botón de Telegram.</li>
+                    </ul>
+                </div>
+
+                <!-- ===== NOTAS SOBRE ACTUALIZACIONES ===== -->
+                <div class="update-notes">
+                    <h4><i data-lucide="refresh-cw" class="icon"></i> Notas sobre actualizaciones de YouChat Web Plana.</h4>
+                    <p>YouChat Web Plana se actualiza automáticamente. Cuando haya una nueva versión disponible, la aplicación Web la descargará sola y se reiniciará con los cambios. No es necesario desinstalar ni reinstalar nada, y tus datos se conservan intactos entre actualizaciones.</p>
+                </div>
+
+                <div class="footer-signature">
+                    <h3>YouChat Web Plana</h3>
+                    <p><strong>youchat.web.cu</strong></p>
+                    <p>Versión 1.4.0</p>
+                    <p class="author">Desarrollado y Diseñado por Milkár Lixán Pupo Riverón</p>
+                    <p class="mt-10">Todos los derechos reservados 2026 ©️</p>
+                    <p>Copyright ©️ 2026 all the reserved by @Milkár</p>
+                    <p>Marca registrada YouChat ®️©️</p>
+                    <p>YouChat registered mark ®️©️</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STAFF DE YOUCHAT ===== -->
+        <section id="staff" class="section">
+            <h2 class="section-title"><i data-lucide="users" class="icon-lg"></i> Staff de YouChat</h2>
+            <p class="section-subtitle">Conoce al equipo de desarrollo, diseño y colaboración de YouChat</p>
+
+            <div class="staff-grid">
+
+                <!-- 1. Milkár Lixán Pupo Riverón -->
+                <div class="staff-card">
+                    <div class="staff-avatar">
+                        <img src="img/staff-milkar.png" alt="Milkár Lixán Pupo Riverón">
+                        <span class="staff-role-badge"><i data-lucide="wrench" class="icon"></i></span>
+                    </div>
+                    <h3>Milkár Lixán Pupo Riverón</h3>
+                    <p class="staff-role"><i data-lucide="wrench" class="icon-sm"></i> Desarrollador de la Web Plana</p>
+                    <p class="staff-bio">Creador y mantenedor de la Web Plana de YouChat. Encargado del diseño, contenido, divulgación y comunidad de youchat.web.cu.</p>
+                    <div class="staff-social">
+                        <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" title="Telegram" class="social-icon telegram"><i data-lucide="send" class="icon"></i></a>
+                        <a href="https://x.com/Milkar_Lixan" target="_blank" rel="noopener" title="X (Twitter)" class="social-icon twitter"><i data-lucide="twitter" class="icon"></i></a>
+                        <a href="https://mastodon.social/@Milkar_Android" target="_blank" rel="noopener" title="Mastodon" class="social-icon mastodon"><i data-lucide="globe" class="icon"></i></a>
+                        <a href="mailto:maniabon.76@gmail.com" title="Correo" class="social-icon email"><i data-lucide="mail" class="icon"></i></a>
+                    </div>
+                </div>
+
+                <!-- 2. Disney Gutiérrez Guevara -->
+                <div class="staff-card">
+                    <div class="staff-avatar">
+                        <img src="img/staff-disney.png" alt="Disney Gutiérrez Guevara">
+                        <span class="staff-role-badge"><i data-lucide="code" class="icon"></i></span>
+                    </div>
+                    <h3>Disney Gutiérrez Guevara</h3>
+                    <p class="staff-role"><i data-lucide="code" class="icon-sm"></i> Desarrollador de la Web y de la app</p>
+                    <p class="staff-bio">Desarrollador principal de la aplicación YouChat y de su plataforma web. Encargado de la arquitectura y despliegue de las nuevas versiones.</p>
+                    <div class="staff-social">
+                        <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" title="Telegram" class="social-icon telegram"><i data-lucide="send" class="icon"></i></a>
+                        <a href="mailto:maniabon.76@gmail.com" title="Correo" class="social-icon email"><i data-lucide="mail" class="icon"></i></a>
+                    </div>
+                </div>
+
+                <!-- 3. Luis Miguel Torres Díaz -->
+                <div class="staff-card">
+                    <div class="staff-avatar">
+                        <img src="img/staff-miguel.png" alt="Luis Miguel Torres Díaz">
+                        <span class="staff-role-badge"><i data-lucide="puzzle" class="icon"></i></span>
+                    </div>
+                    <h3>Luis Miguel Torres Díaz</h3>
+                    <p class="staff-role"><i data-lucide="puzzle" class="icon-sm"></i> Diseñador del logo actual</p>
+                    <p class="staff-bio">Diseñador del logo actual de YouChat. Responsable de la identidad visual de la marca y de los recursos gráficos oficiales.</p>
+                    <div class="staff-social">
+                        <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" title="Telegram" class="social-icon telegram"><i data-lucide="send" class="icon"></i></a>
+                        <a href="mailto:maniabon.76@gmail.com" title="Correo" class="social-icon email"><i data-lucide="mail" class="icon"></i></a>
+                    </div>
+                </div>
+
+                <!-- 4. Dariel Llanes -->
+                <div class="staff-card">
+                    <div class="staff-avatar">
+                        <img src="img/staff-dariel.png" alt="Dariel Llanes">
+                        <span class="staff-role-badge"><i data-lucide="folder" class="icon"></i></span>
+                    </div>
+                    <h3>Dariel Llanes</h3>
+                    <p class="staff-role"><i data-lucide="folder" class="icon-sm"></i> Colaborador de YouChat</p>
+                    <p class="staff-bio">Colaborador del proyecto YouChat, apoyando en la divulgación, soporte y crecimiento de la comunidad.</p>
+                    <div class="staff-social">
+                        <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" title="Telegram" class="social-icon telegram"><i data-lucide="send" class="icon"></i></a>
+                        <a href="mailto:maniabon.76@gmail.com" title="Correo" class="social-icon email"><i data-lucide="mail" class="icon"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== TÉRMINOS Y CONDICIONES ===== -->
+        <section id="terminos" class="section">
+            <h2 class="section-title"><i data-lucide="file-text" class="icon-lg"></i> Términos y Condiciones</h2>
+            <p class="section-subtitle">Al utilizar youchat.web.cu aceptas los siguientes términos y condiciones.</p>
+
+            <div class="legal-content">
+                <p>Al utilizar <strong>youchat.web.cu</strong> aceptas los siguientes términos. Si no estás de acuerdo con ellos, te pedimos que no uses la aplicación web..</p>
+
+                <h3>1. Objeto de la aplicación</h3>
+                <p>youchat.web.cu es una herramienta de divulgación de la app YouChat que permite difundir y divulgar todo lo relacionado con la app.</p>
+
+                <h3>2. Uso gratuito</h3>
+                <p>La aplicación se ofrece de forma gratuita. No existen licencias, suscripciones, ni pagos de ningún tipo. El desarrollador puede agregar funciones opcionales en el futuro sin afectar el uso básico actual.</p>
+
+                <h3>3. Responsabilidad del usuario</h3>
+                <p>El usuario es el único responsable de la información que introduce en la aplicación, de mantener copias de seguridad y de la veracidad de los datos utilizados.</p>
+
+                <h3>4. Pérdida de datos</h3>
+                <p>El desarrollador no se responsabiliza por pérdidas de datos derivadas de: borrado de la caché o del almacenamiento del navegador, daños en el dispositivo, reinstalación del sistema, uso de ventanas de incógnito o falta de copias de seguridad.</p>
+
+                <h3>5. Disponibilidad</h3>
+                <p>La aplicación Web funciona localmente en el dispositivo. Su disponibilidad depende del navegador del usuario y no del desarrollador. No se garantiza un funcionamiento ininterrumpido ni la compatibilidad con todos los dispositivos del mercado.</p>
+                    
+                <h3>6. Modificaciones</h3>
+                <p>El desarrollador puede actualizar estos términos en cualquier momento. Las modificaciones se reflejarán en esta misma sección con su fecha correspondiente. El uso continuado de la aplicación implica la aceptación de los términos vigentes.</p>
+                    
+                <h3>7. Legislación y aplicable </h3>
+                <p>Estos términos se interpretan conforme a las leyes vigentes en la República de Cuba.</p>
+
+                <h3>8. Prohibiciones</h3>
+                <p>No está permitido:</p>
+                <ul>
+                    <li>Usar la aplicación Web para actividades ilegales.</li>
+                    <li>Redistribuirla como producto propio sin mencionar al autor original.</li>
+                    <li>Modificarla para eliminar la mención de autoría.</li>
+                    <li>Venderla o sublicenciarla sin autorización del desarrollador.</li>
+                </ul>
+                    <h3>Contactar</h3>
+                        <p>Para consultas sobre los Terminos y condiciones, contacta al desarrollador:<strong>Milkár Lixán Pupo Riverón </strong>
+                        <a href="mail<to:maniabon.76@gmail.com"><i data-lucide="mail" class="icon-sm"></i>maniabon.76@gmail.com</a></p>
+
+                <span class="last-update">
+                    📍 Última actualización de YouChat Web Plana de sus Términos y Condiciones y su Política de Privacidad: 23 de septiembre 2026
+                </span>
+            </div>
+        </section>
+
+        <!-- ===== POLÍTICA DE PRIVACIDAD ===== -->
+        <section id="privacidad" class="section">
+            <h2 class="section-title"><i data-lucide="lock" class="icon-lg"></i> Política de Privacidad</h2>
+            <p class="section-subtitle">La privacidad de nuestros usuarios es nuestra prioridad principal.</p>
+
+            <div class="legal-content">
+                <p>En <strong>youchat.web.cu</strong> la privacidad de nuestros usuarios es una prioridad. Esta política explica de forma clara qué datos se manejan y cómo se protegen.</p>
+
+                <h3>1. Datos que se recopilan</h3>
+                <p>youchat.web.cu no recopila ningún dato personal. No solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara, micrófono ni ninguna otra información del usuario.</p>
+
+                <h3>2. Dónde se guarda la información</h3>
+                <p>La aplicación solo usa internet la primera vez que se abre, para descargar los recursos visuales (estilos, íconos y librerías de códigos de barras y QR), y para buscar actualizaciones de la propia aplicación. En ningún caso se envían datos del usuario.</p>
+
+                <h3>3. Uso de internet</h3>
+                <p>La aplicación solo usa internet la primera vez que se abre, para descargar los recursos visuales (estilos, íconos y librerías de códigos de barras y QR), y para buscar actualizaciones de la propia aplicación. En ningún caso se envían datos del usuario.</p>
+
+                <h3>4. Cookies y rastreo</h3>
+                <p>No se utilizan cookies, ni píxeles de seguimiento, ni herramientas de analítica. No se rastrea la actividad del usuario dentro ni fuera de la aplicación.</p>
+
+                <h3>5. Publicidad</h3>
+                <p>La aplicación no muestra publicidad de ningún tipo y no comparte información con anunciantes.</p>
+
+                <h3>6. Terceros</h3>
+                <p>No se comparten datos con terceros porque no se recopilan datos. Los únicos servicios externos que se cargan la primera vez son las librerías visuales TailwindCSS y Tabler Icons. Ninguna de ellas accede a la información de la aplicación.</p>
+
+                <h3>7. Seguridad</h3>
+                <p>Como los datos permanecen en tu dispositivo, la seguridad depende de las medidas que tú mismo tomes (bloqueo de pantalla, respaldos periódicos, entre otras). Recomendamos exportar una copia de seguridad con regularidad.</p>
+
+                <h3>8. Derechos del usuario</h3>
+                <p>Puedes eliminar toda la información almacenada en cualquier momento desde Ajustes, pulsando "Borrar todos los datos". También puedes desinstalar la aplicación desde tu navegador.</p>
+
+                <h3>9. Cambios en esta política</h3>
+                <p>Cualquier cambio futuro en esta política se reflejará en esta misma sección con su fecha de actualización.</p>
+
+                <h3>Contactar</h3>
+                <p>Para consultas sobre privacidad, contacta al desarrollador: <strong>Milkár Lixán Pupo Riverón</strong><br>
+                <a href="mail<to:maniabon.76@gmail.com"><i data-lucide="mail" class="icon-sm"></i> maniabon.76@gmail.com</a></p>
+
+                <span class="last-update">
+                    📍 Última actualización de YouChat Web Plana de sus Términos y Condiciones y su Política de Privacidad: 23 de septiembre 2026
+                </span>
+            </div>
+        </section>
+
+        <!-- ===== CONTÁCTENOS ===== -->
+        <section id="contacto" class="section">
+            <h2 class="section-title"><i data-lucide="mail" class="icon-lg"></i> Contáctenos</h2>
+            <p class="section-subtitle">Nos puede contactar a través del siguiente correo electrónico.</p>
+
+            <div class="contact-email-box">
+                <p>Nos puede contactar a través del siguiente correo electrónico. Para sugerir ideas renovadoras sobre la app o para aclarar dudas sobre la aplicación de YouChat.</p>
+                <a href="mailto:maniabon.76@gmail.com"><i data-lucide="mail" class="icon"></i> maniabon.76@gmail.com</a>
+            </div>
+
+            <form class="contact-form" onsubmit="enviarFormulario(event)">
+                <div class="form-group">
+                    <label for="nombre"><i data-lucide="user" class="icon-sm"></i> Nombre</label>
+                    <input type="text" id="nombre" placeholder="Tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="email"><i data-lucide="mail" class="icon-sm"></i> Correo electrónico</label>
+                    <input type="email" id="email" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="mensaje"><i data-lucide="message-square" class="icon-sm"></i> Mensaje</label>
+                    <textarea id="mensaje" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                </div>
+                <button type="submit" class="btn"><i data-lucide="send" class="icon"></i> Enviar Mensaje</button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- ===== BOTONES DE SCROLL ===== -->
+    <div class="scroll-buttons">
+        <button class="scroll-btn" id="scrollUp" onclick="scrollToTop()" aria-label="Ir arriba" title="Ir arriba"><i data-lucide="chevron-up" class="icon"></i></button>
+        <button class="scroll-btn" id="scrollDown" onclick="scrollToBottom()" aria-label="Ir abajo" title="Ir abajo"><i data-lucide="chevron-down" class="icon"></i></button>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>YouChat</h4>
+                <a onclick="showSection('inicio')"><i data-lucide="home" class="icon-sm"></i> Inicio</a>
+                <a onclick="showSection('noticias')"><i data-lucide="newspaper" class="icon-sm"></i> Noticias</a>
+                <a onclick="showSection('fotos')"><i data-lucide="image" class="icon-sm"></i> Fotos</a>
+                <a onclick="showSection('memes')"><i data-lucide="smile" class="icon-sm"></i> Memes</a>
+                <a onclick="showSection('foros')"><i data-lucide="message-square" class="icon-sm"></i> Foros</a>
+                <a onclick="showSection('acerca')"><i data-lucide="info" class="icon-sm"></i> Acerca de</a>
+                <a onclick="showSection('staff')"><i data-lucide="users" class="icon-sm"></i> Staff</a>
+                <a onclick="showSection('aniversario')"><i data-lucide="party-popper" class="icon-sm"></i> Aniversario</a>
+            </div>
+            <div class="footer-col">
+                <h4>Telegram</h4>
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener"><i data-lucide="users" class="icon-sm"></i> Grupo Oficial</a>
+                <a href="https://t.me/YouChat_Canal_Oficial" target="_blank" rel="noopener"><i data-lucide="megaphone" class="icon-sm"></i> Canal Oficial</a>
+            </div>
+            <div class="footer-col">
+                <h4>Recursos</h4>
+                <a onclick="showSection('tips')"><i data-lucide="lightbulb" class="icon-sm"></i> Tips</a>
+                <a onclick="showSection('faq')"><i data-lucide="help-circle" class="icon-sm"></i> FAQ</a>
+                <a onclick="showSection('tutorial')"><i data-lucide="book-open" class="icon-sm"></i> Tutorial</a>
+                <a onclick="showSection('links')"><i data-lucide="link" class="icon-sm"></i> Links</a>
+                <a onclick="showSection('anuncio')"><i data-lucide="megaphone" class="icon-sm"></i> Anuncio</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <a onclick="showSection('terminos')"><i data-lucide="file-text" class="icon-sm"></i> Términos y Condiciones</a>
+                <a onclick="showSection('privacidad')"><i data-lucide="lock" class="icon-sm"></i> Política de Privacidad</a>
+                <a onclick="showSection('historial')"><i data-lucide="history" class="icon-sm"></i> Historial de Cambios</a>
+                <a onclick="showSection('contacto')"><i data-lucide="mail" class="icon-sm"></i> Contáctenos</a>
+            </div>
+        </div>
+
+        <div class="footer-social">
+            <h4>Síguenos en nuestras Redes Sociales</h4>
+            <div class="footer-social-icons">
+                <a href="https://youtube.com/@app_youchat?si=sohuJv4lADJ3i8_h" target="_blank" rel="noopener" title="YouTube" class="youtube"><i data-lucide="youtube" class="icon"></i></a>
+                <a href="https://chat.whatsapp.com/Le4CRk0T8MdLOFBrvj46Ck?s=cl&p=a&ilr=4" target="_blank" rel="noopener" title="WhatsApp" class="whatsapp"><i data-lucide="message-circle" class="icon"></i></a>
+                <a href="https://www.instagram.com/app_youchat?igsh=MXY1ejNlbTg5bDkzZA==" target="_blank" rel="noopener" title="Instagram" class="instagram"><i data-lucide="instagram" class="icon"></i></a>
+                <a href="https://x.com/App_YouChat" target="_blank" rel="noopener" title="X" class="x-twitter"><i data-lucide="x" class="icon"></i></a>
+                <a href="https://t.me/YouChat_Grupo_Oficial" target="_blank" rel="noopener" title="Telegram" class="telegram"><i data-lucide="send" class="icon"></i></a>
+                <a href="https://mastodon.social/@YouChat" target="_blank" rel="noopener" title="Mastodon" class="mastodon"><i data-lucide="globe" class="icon"></i></a>
+                <a href="https://chat.todus.cu/61fc6d87c6864e4ab2fac51cd6540d13" target="_blank" rel="noopener" title="toDus" class="todus"><i data-lucide="message-square" class="icon"></i></a>
+                <a href="mailto:maniabon.76@gmail.com" title="Correo electrónico" class="email"><i data-lucide="mail" class="icon"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p><strong>YouChat <i data-lucide="heart" class="icon-sm"></i></strong> — Rápido, Seguro y Moderno</p>
+            <p>youchat.web.cu | Versión 1.4.0</p>
+            <p>Todos los derechos reservados 2026 ©️ | Desarrollado por Milkár Lixán Pupo Riverón</p>
+            <p>Marca registrada YouChat ®️©️</p>
+        </div>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        /* ===== DATOS ===== */
+        const noticias = [
+            { id: 1, tag: "YouChat", titulo: "YouChat sigue creciendo en la comunidad cubana.", descripcion: "La app de mensajería instantánea vía correo electrónico suma nuevos usuarios cada día.", fecha: "12 Feb 2026", autor: "Equipo YouChat", imagen: "img/logo.png" },
+            { id: 2, tag: "Telegram", titulo: "Nuestro Grupo Oficial ya cuenta con 79 miembros.", descripcion: "Únete al Grupo Oficial y al Canal Oficial para estar al día con las novedades.", fecha: "11 Feb 2026", autor: "Moderación", imagen: "img/comunidad-telegram.png" },
+            { id: 3, tag: "Comunidad", titulo: "Nuevos foros de discusión disponibles.", descripcion: "Se han añadido foros sobre soporte técnico, divulgación y desarrollo.", fecha: "10 Feb 2026", autor: "Moderación", imagen: "img/foros-mejoras.png" },
+            { id: 4, tag: "Actualización", titulo: "Mejoras en la app y futuras versiones en camino.", descripcion: "El equipo trabaja en nuevas funcionalidades para YouChat.", fecha: "08 Feb 2026", autor: "Desarrollo", imagen: "img/foros-mejoras.png" },
+            { id: 5, tag: "Seguridad", titulo: "Actualización de los términos y condiciones.", descripcion: "Revisa los nuevos términos y condiciones actualizados en la sección legal.", fecha: "05 Feb 2026", autor: "Legal", imagen: "img/terminos-privacidad.png" },
+            { id: 6, tag: "Seguridad", titulo: "Actualización de las políticas de privacidad.", descripcion: "Revisa las nuevas políticas y privacidad actualizadas en la sección legal.", fecha: "01 Feb 2026", autor: "Legal", imagen: "img/terminos-privacidad.png" }
+        ];
+
+        const fotos = [
+            { id: 1, titulo: "Encuentro comunitario", descripcion: "Miembros de YouChat en el primer meetup virtual.", url: "img/logo.png" },
+            { id: 2, titulo: "Taller de soporte", descripcion: "Sesión sobre la app y sus futuras versiones.", url: "img/foros-mejoras.png" },
+            { id: 3, titulo: "Divulgación", descripcion: "Presentación de las nuevas funciones de YouChat.", url: "img/comunidad-telegram.png" },
+            { id: 4, titulo: "Equipo de moderación", descripcion: "El equipo detrás de la comunidad YouChat.", url: "img/staff-milkar.png" },
+            { id: 5, titulo: "Evento online", descripcion: "Transmisión en vivo del aniversario de YouChat.", url: "img/logo.png" },
+            { id: 6, titulo: "Comunidad en acción", descripcion: "Usuarios compartiendo sus proyectos en los foros.", url: "img/foros-mejoras.png" }
+        ];
+
+        const memes = [
+            { id: 1, titulo: "Se ahorcó esperando la actualización", descripcion: "El meme más viral del Grupo Oficial", url: "img/meme-1.png" },
+            { id: 2, titulo: "Plan para hoy", descripcion: "1. YouChat 2. Más YouChat 3. Lograr cosas con YouChat", url: "img/meme-2.png" },
+            { id: 3, titulo: "Nauta vs YouChat", descripcion: "La batalla del correo", url: "img/meme-1.png" },
+            { id: 4, titulo: "Sin datos pero con YouChat", descripcion: "El ahorro es real", url: "img/meme-2.png" },
+            { id: 5, titulo: "Grupo Oficial", descripcion: "Todos los YouChateros unidos", url: "img/meme-1.png" },
+            { id: 6, titulo: "Rápido, Seguro y Moderno", descripcion: "Así es YouChat", url: "img/meme-2.png" },
+            { id: 7, titulo: "Beta Tester", descripcion: "Probando las nuevas versiones", url: "img/meme-1.png" },
+            { id: 8, titulo: "Influencer YouChat", descripcion: "Con +300 seguidores", url: "img/meme-2.png" }
+        ];
+
+        const foros = [
+            { id: 1, nombre: "Foro General", descripcion: "Discusiones sobre cualquier tema relacionado con la app de YouChat.", temas: 124, mensajes: 892, inicial: "G" },
+            { id: 2, nombre: "Soporte Técnico", descripcion: "Ayuda sobre dudas y reportes sobre la app y su funcionamiento.", temas: 87, mensajes: 534, inicial: "S" },
+            { id: 3, nombre: "Divulgación y Versiones", descripcion: "Novedades sobre las futuras versiones de YouChat.", temas: 56, mensajes: 321, inicial: "D" },
+            { id: 4, nombre: "Implementación de las Web Interactiva y Plana", descripcion: "Brindar noticias y divulgación sobre varios temas la app.", temas: 42, mensajes: 210, inicial: "C" },
+            { id: 5, nombre: "Ayuda y Comunidad", descripcion: "Preguntas y respuestas entre usuarios y el Staff de YouChat.", temas: 38, mensajes: 187, inicial: "A" }
+        ];
+
+        /* ===== FAQ - VERSIÓN 1.4.0 (NUEVO CONTENIDO) ===== */
+        const faq = [
+            { q: "1️⃣ ¿Qué es YouChat?", a: "Esta aplicación fue programada para establecer comunicación entre las personas que la utilizan, diseñada para atraer a la mayoría de público por su Moderno Interfaz Gráfico y con la esperanza de que se convierta en otra aplicación de mensajería instantánea a través del correo electrónico, útil y necesaria en cualquier dispositivo Android." },
+            { q: "2️⃣ ¿Quiénes la desarrollaron?", a: "Fue desarrollada por unos hermanos ( Alex GI y Oct GI ) en plena cuarentena de la Covid, con la visión de extenderla por todo el país y darle una opción más para la comunicación, aparte de las ya existentes. Pero dejaron de darle más Soporte a la app de YouChat." },
+            { q: "3️⃣ ¿Como funciona la aplicación?", a: "Funciona a travez del correo electrónico ( Nauta o Gmail ). Utilizando la bolsa de correo nauta o cualquier otra vía de conexión." },
+            { q: "4️⃣ ¿Recopila YouChat algún tipo de información de los usuarios?", a: "Si la aplicación necesita, para funcionar, un correo legítimo y su contraseña. El correo si es público, es necesario para la comunicación, por otra parte, la contraseña nunca sale de su teléfono. Los datos que luego son pedidos para llenar el perfil son opcionales y siempre pueden dejarse en blanco. Estos datos no se almacenan en ningún lugar solo en su teléfono y el teléfono del contacto donde se actualizo su perfil." },
+            { q: "5️⃣ ¿Tengo privacidad en mis Chats?", a: "Los Chats son totalmente privados, van de un usuario a otro usuario sin pasar por intermediarios y después de recibidos son borrados de la bandeja de entrada del usuario, sin dejar rastro de ningún tipo. También tiene la opción de encriptar de extremo a extremo los mensajes y multimedia enviados." },
+            { q: "6️⃣ Añadí un contacto nuevo al teléfono, ¿donde esta?", a: "Si añades algún contacto nuevo al teléfono y no aparece en la lista, usa el botón Actualizar en el aparado 'Nueva conversación' para actualizar la lista con el contacto añadido." },
+            { q: "7️⃣ ¿Puedo comunicarme con alguien que no use YouChat?", a: "No era posible en sus versiones iniciales, ahora a través de la bandeja de entrada el usuario puede comunicarse normalmente por el correo con otra aplicación usando la modalidad de Chat o de correo tradicional. El Chat principal sigue siendo compatible solamente con correos que sean enviados desde la propia APK." },
+            { q: "8️⃣ ¿Por qué no me carga ningún contacto? O tengo pocos contactos ¿Qué hago?", a: "La aplicación carga solamente los contactos de su teléfono que tengan correo. En caso de de tener pocos contactos, invite a sus amigos por el botón 'Invitar amigos' en el apartado 'Nueva conversación' y comparta la aplicación con todos para que así pueda crecer la comunidad de YouChat." },
+            { q: "9️⃣ ¿De que forma se puede ahorrar más datos?", a: "Para ahorrar datos la aplicación cuenta con determinadas opciones que puede hacer activadas o desactivadas cuando usted lo deseé. En el apartado de 'Ajuste' valla a la esquina superior derecha y encontrará un signo de pregunta, tóquelo y luego toqué una opción para saber como funciona y si consume o no datos. Recuerde siempre que la aplicación funciona con el correo, así que su consumo se adecua a la tarifa de su operadora, en este caso ETECSA para los residentes en Cuba." },
+            { q: "1️⃣0️⃣ ¿YouChat está disponoble para iOS?", a: "El equipo desarrollador de YouChat No cuenta con un programador de este sistema Operativo. El equipo de desarrollo de YouChat anda buscando un desarrollador en esta plataforma iOS, que nos ayude en dicha plataforma." },
+            { q: "1️⃣1️⃣ ¿Por qué no se pueden crear grupos?", a: "En estos momentos la aplicación está en sus primeros años de desarrollo. En próximas versiones vendrán las opciones de crear Grupos y Canales. Más la opción de crear el APIs de crear bot." },
+            { q: "1️⃣2️⃣ ¿Por qué mi teléfono no funciona el trabajo en segundo plano?", a: "El trabajo en segundo plano de la aplicación aún está en desarrollo, no funciona para todos los teléfonos, por tanto, si ve que se le detiene la aplicación al activarlo no lo use. Se avisará por el historial de cambios para cundo funcione para todos." },
+            { q: "1️⃣3️⃣ ¿Por qué la aplicación no funciona con el número de teléfono?", a: "La aplicación no puede ser con con número de teléfono ya que esto requeriría una gran infraestructura, dígase un buen Servidor y contrato con ETECSA lo cual no poseemos, para permitirnso el manejo de los números de teléfono." },
+            { q: "1️⃣4️⃣ ¿Por qué no se puede hacer videollamada y audiollamadas?", a: "Las audiollamadas y videosllamadas necesitan, para ejecutarse, una conexión directa con el otro usuario siendo posible solo si se cuenta con un servidor. El correo no otorga ese tipo de soporte para implementar en él estos servicios." },
+            { q: "1️⃣5️⃣ ¿Como puedo enterarme que hay una nueva actualización?", a: "Puedes entrar al grupo oficial en el Canal y Grupo en Telegram o ir directo a comprobarlo en Apklis, estos enlaces puedes obtenerlos en el apartado 'Acerca de' en los ajustes de la misma app tocando los iconos correspondiente a cada uno. Oh tocar los siguientes link.👇 Link del Gupo de YouChat. https://t.me/YouChat_Grupo_Oficial Link del Canal de YouChat. https://t.me/YouChat_Canal_Oficial" },
+            { q: "1️⃣6️⃣ ¿Se puede usar la aplicación en el Extranjero?", a: "Este servicio aún está en desarrollo, solo está disponible el correo Gmail. Esto le dará la opción de los Cubanos de comunicarse con su familia en el extranjero simplemente adquiriendo la bolsa de correo Nauta." },
+            { q: "1️⃣7️⃣ ¿Como funciona los Now?", a: "Los Now de YouChat se crearon con la idea general de los Estados de WhatsApp, pero siempre adaptándolos a nuestro entorno y las limitaciones que con el vienen. Para poder ver los Now de alguien debes primero ser su seguidor y para que alguien pueda ver tus Now debe seguirte. Para seguir a alguien debes de entrar a su perfil y allí tocar la opción 'SEGUIR', o ir a la opción 'Seguir a' en la vista de los contactos, y allí agregar el correo de la persona a la que quieres seguir. La estrella bajo de su perfil representa la cantidad de seguidores que tiene. 🔹️En el apartado de 'Ajuste' tenemos la opción 'Administrar Now' y 'Aceptar solicitud' de la primera hablaremos más adelante, en cuanto a la segunda brinda la opción de escoger entre dos modos: - Manual: Usted será notificado y tendrán la opción de aceptar o no las solicitudes de las personas que le quieren seguir. - Automático: Todas las solicitudes de personas que le quieren seguir serán aceptadas automáticamente sin ser notificado. 🔹️La opción de 'Administrar Now' te da la posibilidad de ver todos los Now que hayas recibido o publicado y varias funciones más. Los Now no se borrarán automáticamente luego de 24 hrs, simplemente se almacenarán hasta que decidas borrarlos. 🔹️En la pantalla inicial se podrán visualizar los Now que no hallas visto y los más reciente, y solamente podrás reaccionar una sola vez por Estado. Cuando subas un nuevo Estado, este se enviará a todos tus seguidores y si un seguidor nuevo entra no le llegarán los Now previamente subido por ti. 🔹️En cuanto el consumo dependerá de la cantidad de seguidores que tengas y el tipo de estado, Explico: - ETECSA brinda la opción de enviar un sólo correo hasta 20 personas, consumiéndote lo que pesa el correo de una sola vez. Es decir, si tienes de 1 a 20 seguidores será como enviar un sólo correo, 21 a 40 son 2 correos que envías y así sucesivamente de cada 20 usuarios. Para los que le gusten ahorrar se aconseja que no pasen de 20 sus seguidores. - En cuanto el tipo de Estado hay 2, si subes un Estado 'Solo texto' su peso será el de un mensaje de texto normal, es decir, casi nada. En cambio, si subes uno 'Imagen y texto' su peso dependerá del peso de la imagen, este se puede regular con la opción 'Calidad de imágenes' de los ajustes de YouChat." },
+            { q: "1️⃣8️⃣ ¿CÓMO HABILITAR EL ACCESO A APLICACIONES POCO SEGURAS EN GMAIL?", a: "1- Dar click en la imagen de tu cuenta de Gmail. 2- Luego dar click en 'Cuenta de Google'. 3- Click en 'Seguridad'. 4- Ir al apartado 'Acceso de aplicaciones poco seguras' y dar click en 'Activar acceso'. 🔹️También puedes probar buscar en Google : 'como habilitar el acceso a aplicaciones poco seguras en Gmail' y seguir los pasos que te muestra." },
+            { q: "1️⃣9️⃣ ¿Como hacer mi copia de seguridad y guardo mis datos?", a: "🚀 Se recomienda que hagan una Copia de Seguridad antes de instalar la nueva versión o desinstalar la app de YouChat por X razones,🤞 no queremos que ocurra algún problema 😉 del que no haya regreso. ¿Como guardo mis datos? 1-Ve a ajustes. 2-Toca sobre copia de seguridad. 3-Luego sobre guardar locamente y espera a que te diga que fue (guardado con éxito.) 4-Listo sus Chats y seguidores están seguros." },
+            { q: "2️⃣0️⃣ ¿Cómo funciona la calificación de usuario?", a: "La calificación de usuario es la siguiente: 1-Usuario VIP: si es un usuario oficial de la aplicación. 2-Usuario BetaTester: si tiene activado el beta tester de la aplicación. 3-Usuario Influencer: si tiene más de 300 seguidores. 4-Usuario Micro influencer: si tiene más de 200 seguidores. 5-Usuario Popular: si tiene más de 100 seguidores. 6-Usuario Normal: si tiene menos de 100 seguidores. 🔹️Este sería el orden de prioridad para la calificación de usuario. Iconografía según el tipo de usuario: ✅ Usuario oficial o VIP ✅ Usuario Beta Tester 👑 Usuario Influencer 💎 Usuario Micro Influencer 🔮 Usuario Popular ⭐ Usuario Normal" },
+            { q: "2️⃣1️⃣ ¿Qué gano por cada calificación de usuario?", a: "🔹️Se puede apreciar en la lista de chats delante del nombre del usuario un ícono que indica su calificación, no obstante cada uno de los tipos de usuarios tienen disponibles las siguientes funciones: 1-Usuario VIP: se le concede hasta 7 puntos diarios para publicar Post, 10 puntos diarios para comentar en los Post y tiene acceso a 15 íconos diferentes para los mismos. Además cuenta con la opción de compartir temas, crear tarjetas y subir imágenes por los mismos Post. 2-Usuario BetaTester: se le concede 6 puntos diarios para publicar Post, 9 puntos diarios para comentar en los Post y tiene acceso a 15 íconos diferentes para los mismos. Además cuenta con la opción de compartir temas, crear tarjetas y subir imágenes por los mismos Post. 3-Usuario Influencer: se le concede 5 puntos diario para publicar Post, 8 puntos diarios para comentar en los Post y tiene acceso a 15 íconos diferentes para los mismos. Además cuenta con la opción de compartir temas, crear tarjetas y subir imágenes por los mismos Post. 4-Usuario Micro Influencer: se le concede hasta 4 puntos diario para publicar Post, 7 puntos diarios para comentar en los Post y tiene acceso a 15 íconos diferentes para los mismos. Además cuenta con la opción de compartir temas, crear tarjetas y subir imágenes por los mismos Post. 5-Usuario Popular: se le concede hasta 3 puntos diarios para publicar Post, 6 puntos diarios para comentar en los Post y tiene acceso a 10 iconos diferentes para los mismos. Además cuenta con la opción de compartir temas, crear tarjetas y subir imágenes por los mismos Post. 6-Usuario Normal: se le concede hasta 2 puntos diarios para publicar Post, 5 puntos diarios para comentar en los Post y tiene acceso a 5 ícono diferentes para los mismos. Además cuenta con la opción de compartir temas por los mismos Post y crear tarjetas por los mismos Post. 🔹️Serán agregadas más funciones según vayan saliendo nuevas versiones de la aplicación." },
+            { q: "2️⃣2️⃣ ¿Cómo funcionan los Post?", a: "🔹️El servicio de Post te permite publicar un mensaje, válido por 24 horas, que le llegará a todos los usuarios que usen la aplicación y tengan el servicio de Post activado. 🔹️Es de obligación por cada usuario que el servicio sea usado con disciplina, sino serán privados de la opción de publicar Post. 🔹️También pueden reportar aquellos Post que su contenido sea realmente ofensivo, en caso contrario puede bloquearlo localmente en su aplicación para que no recibir más Post de ese correo." },
+            { q: "2️⃣3️⃣ ¿Cómo funciona la bandeja de entrada de YouChat?", a: "La bandeja de entrada fue pensada y diseñada para el gusto de todos los usuarios que la usen, ya que cuenta con dos formas de visualizar los correos: 🔹️Modalidad Chat: Parecida a la vista de DeltaChat o Dímelo, donde se pueden ver lo correo en forma de chat y ordenados por usuarios. 🔹️Modalidad tradicional: Parecida a la vista tradicional de ver los correos, ordenados uno debajo del otro. Ejemplo de esto está el buzón de Sijú, AqualMail, Gmail y muchas otras. El usuario siempre tiene la opción de desactivar la bandeja de YouChat si se siente cómodo con la aplicación que esté usando para gestionar su correo o si no quiere gestionar el mismo. También se incluyen opciones para restringir la entrada a la bandeja de correos provenientes de otras aplicaciones de correo para que, en caso que el usuario guste en poseer varias aplicaciones, no reciba más de 1 vez el mismo correo." },
+            { q: "2️⃣4️⃣ ¿Como puedo encontrar más información sobre YouChat?", a: "🔹️Puedes encontrar más información al respecto de la App, por estos link de su Gupo y Canal en Telegram. 📌 Link del Gupo por Telegram de YouChat. https://t.me/YouChat_Grupo_Oficial 📌 Link del Canal por Telegram de YouChat. https://t.me/YouChat_Canal_Oficial" },
+            { q: "2️⃣5️⃣ ¿Cómo puedo usar los Sticker de Telegram y WhatsApp u otro aquí?", a: "La aplicación soporta las siguientes extensiones para el uso de Stickers: -.tgs -.webp -.jpg ó .jpeg -.png -.gif Usted solamente debe de ir a la carpeta de 'YouChat/Sticker', crear dentro una nueva carpeta y copiar en ella todos los Stickers que quiera, luego abrir la aplicación y ya deben de cargar todos. Los Stickers no son comprimidos al enviarse, por tanto, tenga cuidado con ellos podría generar un gran consumo si se envían demasiado." },
+            { q: "2️⃣6️⃣ ¿YouChat tiene su Web como algunas app similares?", a: "Al principio de sus inicios la app No contaba con una Web, pero ya la app a madurando y tiene su propio Programador y Desarrollador Web Disney, que ya es parte del equipo de desarrollo y ya pronto tendrá su Web también funcional. Todos los derechos reservados 2026 ©️ Copyright ©️ 2026 all the reserved by @Milkár Marca registrada YouChat ®️©️ YouChat registered mark ®️©️" }
+        ];
+
+        /* ===== TIPS - VERSIÓN 1.4.0 (NUEVO CONTENIDO) ===== */
+        const tips = `
+            <div class="tip-block">
+                <h4><i data-lucide="lightbulb" class="icon"></i> 💡 Tips # 1️⃣</h4>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Si tocas la barra que dice Chats cuando hay mensajes nuevos te lleva hasta donde este el primer Chat con mensajes sin leer aún, y si no hay mensajes nuevos tocarla también te llevará al inicio del Chat. Espero le sea útil este proceso para evitar tener que buscar donde está ese mensaje sin leer o tener que ir arriba después de bajar tanto.</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Si vas al perfil de cualquier usuario y mantienes presionado su correo este se copiará automáticamente al portapapeles.</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Recuerde que YouChat pide su contraseña de correo solamente para iniciar sesión con el mismo, jamás se necesitará para otro fin. No nos hacemos responsables por la pérdida de dicho correo. Actualice la App desde fuentes oficiales, como el Canal o Grupo en Telegram y desde Apklis.</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿SabíasQué?</strong></p>
+                <p>🙌🏻 Al adquirir el Plan toDus que es el mismo del correo electrónico que sirve para YouChat también, desde Transfermóvil recibes 1GB de Datos Móviles Nacionales, ideales para ahorrar tus Datos Móviles Internacionales.</p>
+                <p>🔹️Con este plan puedes compartir vídeos, imágenes, archivos, mensajes de voz y mucho más, además de enviar mensajes de texto ilimitados.</p>
+                <p>✨ Estos datos se adquieren desde Transfermóvil sin afectar tu saldo principal y además, son Acumulables.</p>
+            </div>
+
+            <div class="tip-block">
+                <h4><i data-lucide="lightbulb" class="icon"></i> 💡 Tips # 2️⃣</h4>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️El nombre "Now" fue una idea original de @roclahy 😱, la administradora de iTecnoGeek, a la cual queremos🥳 agradecerles por permitirnos usarlo 👍 en nuestra aplicación, simplemente es el término perfecto 👌 para nuestro proyecto. 😁</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Recuerden leer detenidamente cada opción de los ajustes antes de imaginar cómo debería de funcionar para usted. Muchas de sus dudas serán aclaradas con esto.</p>
+                <p>Paso 1: toque el ícono superior a la derecha. ❓</p>
+                <p>Paso 2: toque cualquier opción de los ajustes.</p>
+                <p>Le va a salir la siguiente opción.</p>
+                <p>❓Elija una opción para obtener su explicación.</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Si tiene un error al hacer una copia de seguridad, vaya a la carpeta YouChat en la App y borre la salva anterior, que entra en conflicto con el nuevo sistema de guardado.</p>
+                <p>🔹️Si activó la burbuja de datos, y se le detiene la aplicación, entre con los datos apagados y desactive esta opción.</p>
+                <p>🔹️Si la galería no le funciona o le cargan fotos en negro, borre las fotos y vuelva a subirla, a veces la conexión da error al subirla.</p>
+            </div>
+
+            <div class="tip-block">
+                <h4><i data-lucide="lightbulb" class="icon"></i> 💡 Tips # 3️⃣</h4>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>YouChat tiene varias App para gestionar sus Now (Estados).</p>
+                <p>🔹️Una manera más de gestionar tus Estados, más fácil de descargar sus (Now), YouChat Status, YouChat Help, You Now y su otra App que tiene a su disposición varios fondos de pantallas de buena calidad y buena interfaz, You Wallpaper!!!</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Al tocar o hacer click encima del Post de un usuario le sale varias opciones, que son:</p>
+                <p>-Ir al Chat.</p>
+                <p>-Dejar de seguir.</p>
+                <p>-Copiar.</p>
+                <p>-Guardar en Galería.</p>
+                <p>-Bloquear.</p>
+                <p>-Reportar.</p>
+                <p>-Eliminar.</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Al tocar encima de un Now de un seguidor tuyo le salen 2 opciones:</p>
+                <p>-Ir al Chat.</p>
+                <p>-Dejar de seguir.</p>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>¿Probaste ya compartir un Tema?</p>
+                <p>1- Ve a personalizar.</p>
+                <p>2- Crea un tema propio.</p>
+                <p>3- Deja presionado sobre el.</p>
+                <p>4- Dale en compartir y selecciona un Chat.</p>
+                <p>5- Listo, al usuario que se lo enviaste podrá usar su Tema.</p>
+            </div>
+
+            <div class="tip-block">
+                <h4><i data-lucide="lightbulb" class="icon"></i> 💡 Tips # 4️⃣</h4>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️La opción Usuarios Público te da la opción de ver todos los usuarios que tengan implementada la opción, y a la vez también usted puede activar esa opción en sus ajustes, así podrá conocer más personas y hacer Amistades por todo el país y Chatear con ellas.</p>
+                <p><strong>¿🆂🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️En los ajuste de la App existe el apartado Contáctenos, esta opción le da al usuario de reportar cualquier duda o reporte de errores de la App, así los desarrolladores de la aplicación le pueden dar solución e implementarlo en próximas versión de la App.</p>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Si en un Chat pones el signo de numeral # delante y después una palabra, esta se torna de color azul la palabra escrita.</p>
+                <p>✅ Ejemplo: #YouChat</p>
+                <p>Con numeral # solo al principio de una sola palabra.</p>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Usted puede añadir estilo de fuente Markdown de letras a sus mensajes en YouChat, usted puede personalizar sus mensajes en sus conversaciones con sus Amigos y Familiares en YouChat.</p>
+                <p>Tipo de estilo de fuente de Markdown.</p>
+                <p style="text-align:center"><strong>Negrita</strong></p>
+                <p>✅ Ejemplo: *Hola*</p>
+                <p>Con asterisco al principio y final de cada oración o palabra.</p>
+                <p style="text-align:center"><strong>Monoespanciba</strong></p>
+                <p>✅ Ejemplo: 'Hola'</p>
+                <p>Con coma superior al principio y al final de cada oración o palabra.</p>
+                <p style="text-align:center"><strong>Cursiva</strong></p>
+                <p>✅ Ejemplo: _Hola_</p>
+                <p>Con guión bajo al principio y al final de cada oración o palabra.</p>
+            </div>
+
+            <div class="tip-block">
+                <h4><i data-lucide="lightbulb" class="icon"></i> 💡 Tips # 5️⃣</h4>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿Sabías Qué?</strong></p>
+                <p>🔹️Que YouChat tiene la opción de poner modo Oscuro y Claro como mucha App y Web. Esta opción es útil ya que muchos usuarios le gusta más la opción de Oscuro ya sea por ser más cómodo a la vista.</p>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿SabíasQué?</strong></p>
+                <p>🔹️Si tocas en el botón de los Ajustes de la app aparecen todos los Ajustes y Opción de la app para modificar, según el usuario lo deseé implementar y Modificar a su gusto.</p>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿SabíasQué?</strong></p>
+                <p>🔹️YouChat tiene la opción de su Bandeja de entrada como muchas app de correo electrónico convencional, esto facilita a los usuarios comunicarse e enviar correos atraves de la app y recibir correos de otras app de correo electrónico.</p>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿SabíasQué?</strong></p>
+                <p>🔹️En los Ajustes esta la opción de Personalizar, que es exacta o parecida a la que tiene Telegram, esto facilita que el usuario diseñe o personalise la app a su gusto.</p>
+                <p><strong>¿🅰🅱🅸🅰🆂 🆀🆄🅴?😉</strong></p>
+                <p><strong>¿SabíasQué?</strong></p>
+                <p>🔹️En los Ajustes de la app esta la opción de Seguidores, igual o parecido a la que tiene otras app de mensajería instantánea como por ejemplo: Instagram, ahí los usuarios ven los Seguidos y Seguidores de él.</p>
+                <p class="mt-20 text-center"><strong>Todos los derechos reservados 2026 ©️</strong><br>Copyright ©️ 2026 all the reserved by @Milkár<br>Marca registrada YouChat ®️©️<br>YouChat registered mark ®️©️</p>
+            </div>
+        `;
+
+        /* ===== RENDERIZADO ===== */
+        function renderNoticias(containerId, limit = null) {
+            const c = document.getElementById(containerId); if (!c) return;
+            let l = noticias; if (limit) l = noticias.slice(0, limit);
+            c.innerHTML = l.map(n => `
+                <article class="card">
+                    <div class="card-img">${n.imagen ? `<img src="${n.imagen}" alt="${n.titulo}">` : '<i data-lucide="newspaper" class="icon"></i>'}</div>
+                    <div class="card-body">
+                        <span class="card-tag">${n.tag}</span>
+                        <h3>${n.titulo}</h3>
+                        <p>${n.descripcion}</p>
+                        <div class="card-meta">
+                            <span><i data-lucide="calendar" class="icon-sm"></i> ${n.fecha}</span>
+                            <span><i data-lucide="user" class="icon-sm"></i> ${n.autor}</span>
+                        </div>
+                    </div>
+                </article>`).join('');
+            lucide.createIcons();
+        }
+
+        function renderGaleria(containerId, lista, limit = null, mensaje = 'Foto') {
+            const c = document.getElementById(containerId); if (!c) return;
+            let l = lista; if (limit) l = lista.slice(0, limit);
+            c.innerHTML = l.map(f => `
+                <div class="gallery-item" onclick="alert('${mensaje}: ${f.titulo}')">
+                    <img src="${f.url}" alt="${f.titulo}" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div><h4>${f.titulo}</h4><p>${f.descripcion}</p></div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function renderForos(containerId, limit = null) {
+            const c = document.getElementById(containerId); if (!c) return;
+            let l = foros; if (limit) l = foros.slice(0, limit);
+            c.innerHTML = l.map(f => `
+                <div class="forum-item" onclick="alert('Abriendo foro: ${f.nombre}')">
+                    <div class="forum-avatar">${f.inicial}</div>
+                    <div class="forum-info"><h4>${f.nombre}</h4><p>${f.descripcion}</p></div>
+                    <div class="forum-stats">
+                        <div><strong>${f.temas}</strong>Temas</div>
+                        <div><strong>${f.mensajes}</strong>Mensajes</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function renderFaq() {
+            const c = document.getElementById('allFaq'); if (!c) return;
+            c.innerHTML = faq.map((f, i) => `
+                <div class="accordion" id="acc-${i}">
+                    <div class="accordion-header" onclick="toggleAccordion(${i})">
+                        <span>${f.q}</span>
+                        <span class="arrow"><i data-lucide="chevron-down" class="icon-sm"></i></span>
+                    </div>
+                    <div class="accordion-body"><p>${f.a}</p></div>
+                </div>`).join('');
+            lucide.createIcons();
+        }
+
+        function toggleAccordion(i) {
+            document.getElementById('acc-' + i).classList.toggle('open');
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const s = document.getElementById(id); if (s) s.classList.add('active');
+            document.querySelectorAll('nav a').forEach(a => a.classList.toggle('active', a.dataset.section === id));
+            document.getElementById('mainNav').classList.remove('open');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMenu() { document.getElementById('mainNav').classList.toggle('open'); }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            const btn = document.getElementById('themeBtn');
+            btn.innerHTML = next === 'dark' ? '<i data-lucide="sun" class="icon"></i>' : '<i data-lucide="moon" class="icon"></i>';
+            lucide.createIcons();
+            try { localStorage.setItem('youchat-theme', next); } catch(e) {}
+        }
+
+        function loadTheme() {
+            try {
+                const saved = localStorage.getItem('youchat-theme');
+                if (saved) {
+                    document.documentElement.setAttribute('data-theme', saved);
+                    const btn = document.getElementById('themeBtn');
+                    btn.innerHTML = saved === 'dark' ? '<i data-lucide="sun" class="icon"></i>' : '<i data-lucide="moon" class="icon"></i>';
+                    lucide.createIcons();
+                }
+            } catch(e) {}
+        }
+
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function scrollToBottom() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+
+        function handleScrollButtons() {
+            const up = document.getElementById('scrollUp');
+            const down = document.getElementById('scrollDown');
+            const y = window.scrollY;
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            if (y > 300) up.classList.add('visible'); else up.classList.remove('visible');
+            if (y < max - 300) down.classList.add('visible'); else down.classList.remove('visible');
+        }
+
+        function enviarFormulario(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const mensaje = document.getElementById('mensaje').value;
+            const asunto = encodeURIComponent('Mensaje desde YouChat Web Plana - ' + nombre);
+            const cuerpo = encodeURIComponent('Nombre: ' + nombre + '\nCorreo: ' + email + '\n\nMensaje:\n' + mensaje);
+            window.location.href = 'mailto:maniabon.76@gmail.com?subject=' + asunto + '&body=' + cuerpo;
+            setTimeout(() => {
+                alert('¡Gracias ' + nombre + '! Se ha abierto tu cliente de correo para enviar el mensaje a maniabon.76@gmail.com');
+                e.target.reset();
+            }, 300);
+        }
+
+        /* ===== SERVICE WORKER - ACTUALIZACIÓN AUTOMÁTICA ===== */
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => {
+                        console.log('Service Worker registrado:', reg.scope);
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nueva versión disponible
+                                    const toast = document.getElementById('updateToast');
+                                    if (toast) {
+                                        toast.classList.add('visible');
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 3000);
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => console.log('Error SW:', err));
+            }
+        }
+
+        /* ===== INICIALIZACIÓN ===== */
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            lucide.createIcons();
+
+            renderNoticias('homeNoticias', 3);
+            renderNoticias('allNoticias');
+            renderGaleria('homeFotos', fotos, 3, 'Foto');
+            renderGaleria('allFotos', fotos, null, 'Foto');
+            renderGaleria('homeMemes', memes, 3, 'Meme');
+            renderGaleria('allMemes', memes, null, 'Meme');
+            renderForos('homeForos', 3);
+            renderForos('allForos');
+            renderFaq();
+            document.getElementById('allTips').innerHTML = tips;
+
+            lucide.createIcons();
+
+            window.addEventListener('scroll', handleScrollButtons);
+            handleScrollButtons();
+
+            document.addEventListener('click', (e) => {
+                const nav = document.getElementById('mainNav');
+                const toggle = document.querySelector('.menu-toggle');
+                if (nav.classList.contains('open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
+                    nav.classList.remove('open');
+                }
+            });
+
+            // Registrar Service Worker para actualización automática
+            registerServiceWorker();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') document.getElementById('mainNav').classList.remove('open');
+        });
+    </script>
+</body>
+</html>
