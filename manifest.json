@@ -1,4 +1,3 @@
-
 {
   "name": "YouChat - Mensajería por Correo",
   "short_name": "YouChat",
@@ -11,6 +10,7 @@
   "theme_color": "#2563eb",
   "lang": "es",
   "dir": "ltr",
+  "version": "1.4.0",
   "categories": ["social", "communication", "productivity"],
   "icons": [
     {
@@ -43,6 +43,12 @@
       "name": "Telegram",
       "short_name": "Telegram",
       "url": "./index.html#telegram",
+      "icons": [{ "src": "img/logo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Tips",
+      "short_name": "Tips",
+      "url": "./index.html#tips",
       "icons": [{ "src": "img/logo.png", "sizes": "96x96" }]
     }
   ]
